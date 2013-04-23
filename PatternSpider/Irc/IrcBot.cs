@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using IrcDotNet;
 using PatternSpider.Utility;
@@ -7,42 +9,38 @@ namespace PatternSpider.Irc
 {
     class IrcBot : IDisposable
     {
-        private const int ClientQuitTimeout = 1000;
-
-        // Internal and exposable collection of all clients that communicate individually with servers.
+        private const int ClientQuitTimeout = 1000;        
         private IrcClient _ircClient;
 
-        // True if the read loop is currently active, false if ready to terminate.
-        private bool _isRunning;
+        private bool _isRunning; // True if the read loop is currently active, false if ready to terminate.        
         private bool _isDisposed;
-        
+
+        private string _server;
+        private List<string> _channelsToJoin;
+        private IrcRegistrationInfo _registrationInfo;
+        private DateTime _lastPing;
+        private readonly TimeSpan _pingInterval = new TimeSpan(0, 1, 0);
+
+        public string QuitMessage { get; set; }
+        public string Server { get { return _server; }}
+        public List<String> Channels 
+        { 
+            get
+            {
+                return _ircClient.Channels.Select(channel => channel.ToString()).ToList();
+            }
+        }
 
         public IrcBot()
         {
             _isRunning = false;
+            _channelsToJoin = new List<string>();
+            _lastPing = DateTime.Now;
         }
 
         ~IrcBot()
         {
             Dispose(false);
-        }
-
-        public virtual string QuitMessage
-        {
-            get { return null; }
-        }
-
-        public IrcRegistrationInfo RegistrationInfo
-        {
-            get
-            {
-                return new IrcUserRegistrationInfo
-                           {
-                    NickName = "DevSpider",
-                    UserName = "DevSpider",
-                    RealName = "DevSpider"
-                };
-            }
         }
 
         public void Dispose()
@@ -75,11 +73,38 @@ namespace PatternSpider.Irc
 
         private void ThreadRun()
         {
-            // Read commands from stdin until bot terminates.
             _isRunning = true;
             while (_isRunning)
             {
+                if (_ircClient == null) continue;
+                
+                //Check if we are conneted, if not and we have connection information, give connecting a shot.
+                if (!_ircClient.IsConnected && Server != null && _registrationInfo != null)
+                {
+                    Connect(Server, _registrationInfo);
+                }
 
+                //If we are connected but not registered wait 30 seconds for the server, if we still don't register, disconnect.
+                if (_ircClient.IsConnected && !_ircClient.IsRegistered)
+                {
+                    Thread.Sleep(30000);
+                    if (!_ircClient.IsRegistered)
+                    {
+                        _ircClient.Disconnect();
+                    }
+                }
+
+                //Throw out a ping every minute to check connection.
+                if (_ircClient.IsRegistered)
+                {
+                    if (DateTime.Now - _lastPing > _pingInterval)
+                    {
+                        _ircClient.Ping();
+                        _lastPing = DateTime.Now;
+                    }
+                }
+
+                Thread.Sleep(5000);
             }
 
             Dispose();
@@ -123,6 +148,8 @@ namespace PatternSpider.Irc
             }
             
             _ircClient = client;
+            _server = server;
+            _registrationInfo = registrationInfo;
 
             Console.Out.WriteLine("Now connected to '{0}'.", server);
         }
@@ -138,10 +165,58 @@ namespace PatternSpider.Irc
 
             // Remove client from connection.
             _ircClient = new IrcClient();
+            _server = null;
 
             Console.Out.WriteLine("Disconnected from '{0}'.", server);
         }
 
+        public void Join(string channel)
+        {
+            Join(new List<string>{channel});
+        }
+
+        public void Join(List<string> channels)
+        {
+            foreach (var channel in channels.Where(channel => !_channelsToJoin.Contains(channel)))
+            {
+                _channelsToJoin.Add(channel);
+            }
+
+            var joinedchannels = Channels;
+
+            if (_ircClient.IsRegistered)
+            {
+                foreach (var channel in _channelsToJoin.Where(channel => !joinedchannels.Contains(channel)))
+                {
+                    _ircClient.Channels.Join(channel);
+                }
+            }
+        }
+
+        public void Part(string channel)
+        {
+            Part(new List<string>{channel});
+        }
+
+        public void Part(List<string> channels)
+        {
+            foreach (var channel in channels)
+            {
+                _ircClient.Channels.Leave(channel);
+                _channelsToJoin.Remove(channel);
+            }
+        }
+
+        #region Exposed Event
+
+        public delegate void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e);
+        public event ChannelMessage OnChannelMessage;
+
+        public delegate void UserMessage(object source, IrcBot ircBot, IrcMessageEventArgs e);
+        public event UserMessage OnUserMessage;
+
+
+        #endregion 
 
         #region IRC Client Event Handlers
 
@@ -163,6 +238,8 @@ namespace PatternSpider.Irc
             client.LocalUser.MessageReceived += IrcClientLocalUserMessageReceived;
             client.LocalUser.JoinedChannel += IrcClientLocalUserJoinedChannel;
             client.LocalUser.LeftChannel += IrcClientLocalUserLeftChannel;
+
+            Join(_channelsToJoin);
         }
 
         private void IrcClientLocalUserNoticeReceived(object sender, IrcMessageEventArgs e)
@@ -176,6 +253,10 @@ namespace PatternSpider.Irc
 
             if (e.Source is IrcUser)
             {
+                if (OnUserMessage != null)
+                {
+                    OnUserMessage(sender, this, e);    
+                }                
             }
         }
 
@@ -220,6 +301,10 @@ namespace PatternSpider.Irc
 
             if (e.Source is IrcUser)
             {
+                if (OnChannelMessage != null)
+                {
+                    OnChannelMessage(sender,this, e);                    
+                }                
             }
         }
 
