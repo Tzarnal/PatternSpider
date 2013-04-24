@@ -1,14 +1,11 @@
-﻿using System;
-using IrcDotNet;
-using PatternSpider.Irc;
-
-namespace PatternSpider
+﻿namespace PatternSpider
 {
     class Program
     {
         static void Main(string[] args)
         {
-
+            var patternSpider = new PatternSpider();
+            patternSpider.Run();
         }
     }
 }

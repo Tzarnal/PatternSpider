@@ -48,6 +48,7 @@
     <Compile Include="Irc\IrcBotException.cs" />
     <Compile Include="Irc\IrcBotUtilities.cs" />
     <Compile Include="Irc\IrcBot.cs" />
+    <Compile Include="PatternSpider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\ConsoleUtilities.cs" />
