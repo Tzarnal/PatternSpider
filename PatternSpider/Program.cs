@@ -1,4 +1,6 @@
-﻿namespace PatternSpider
+﻿using System;
+
+namespace PatternSpider
 {
     class Program
     {
@@ -6,6 +8,10 @@
         {
             var patternSpider = new PatternSpider();
             patternSpider.Run();
+
+            Console.WriteLine("Finished, press any key to continue");
+            Console.ReadKey();
+
         }
     }
 }
