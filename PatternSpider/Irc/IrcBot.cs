@@ -154,6 +154,12 @@ namespace PatternSpider.Irc
             Console.Out.WriteLine("Now connected to '{0}'.", server);
         }
 
+        public void Disconnect(string message)
+        {
+            QuitMessage = message;
+            Disconnect();
+        }
+
         public void Disconnect()
         {
             // Disconnect IRC client that is connected to given server.

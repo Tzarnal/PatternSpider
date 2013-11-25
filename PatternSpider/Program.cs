@@ -9,9 +9,13 @@ namespace PatternSpider
             var patternSpider = new PatternSpider();
             patternSpider.Run();
 
-            Console.WriteLine("Finished, press any key to continue");
+            Console.WriteLine("Press any key to close");
             Console.ReadKey();
 
+            patternSpider.Quit();
+
+            Console.WriteLine("Press any key to close");
+            Console.ReadKey();
         }
     }
 }

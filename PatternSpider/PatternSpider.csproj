@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\MainConfig.cs" />
+    <Compile Include="Config\ServerConfig.cs" />
     <Compile Include="Irc\InvalidCommandParametersException.cs" />
     <Compile Include="Irc\IrcBotException.cs" />
     <Compile Include="Irc\IrcBotUtilities.cs" />
