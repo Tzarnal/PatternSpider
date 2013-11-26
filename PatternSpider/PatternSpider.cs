@@ -6,6 +6,7 @@ using System.Text;
 using IrcDotNet;
 using PatternSpider.Config;
 using PatternSpider.Irc;
+using PatternSpider.Plugins;
 
 namespace PatternSpider
 {
@@ -22,7 +23,11 @@ namespace PatternSpider
 
         public void Run()
         {
+            var pluginManager = new PluginManager();
+            pluginManager.LoadPlugins();
+
             Connect(_configuration.Servers);
+
         }
 
         public void Quit()

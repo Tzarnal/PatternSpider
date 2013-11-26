@@ -8,14 +8,12 @@ namespace PatternSpider
         {
             var patternSpider = new PatternSpider();
             patternSpider.Run();
-
-            Console.WriteLine("Press any key to close");
+            
+            Console.WriteLine("Press any key to quit");
             Console.ReadKey();
 
             patternSpider.Quit();
-
-            Console.WriteLine("Press any key to close");
-            Console.ReadKey();
+            
         }
     }
 }
