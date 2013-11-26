@@ -7,7 +7,7 @@ using PatternSpider.Utility;
 
 namespace PatternSpider.Irc
 {
-    class IrcBot : IDisposable
+    public class IrcBot : IDisposable
     {
         private const int ClientQuitTimeout = 1000;        
         private IrcClient _ircClient;

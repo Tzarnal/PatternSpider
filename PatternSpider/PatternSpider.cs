@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using IrcDotNet;
 using PatternSpider.Config;
 using PatternSpider.Irc;
@@ -13,57 +13,112 @@ namespace PatternSpider
     class PatternSpider
     {
         private MainConfig _configuration;
-        private List<IrcBot> _connections;
+        private Dictionary<IrcBot, ServerConfig> _connections;
+        private PluginManager _pluginManager;
 
         public PatternSpider()
         {
-            _connections = new List<IrcBot>();
+            _connections = new Dictionary<IrcBot, ServerConfig>();
+            _pluginManager = new PluginManager();
             LoadConfiguration();
         }
 
         public void Run()
-        {
-            var pluginManager = new PluginManager();
-            pluginManager.LoadPlugins();
-
+        {                       
             Connect(_configuration.Servers);
-
         }
 
         public void Quit()
         {
             _configuration.Save();
 
-            foreach (var connection in _connections)
+            foreach (KeyValuePair<IrcBot, ServerConfig> pair in _connections)
             {
-                connection.Disconnect(_configuration.QuitMessage);
-                connection.Stop();
-            }            
+                pair.Key.Disconnect(_configuration.QuitMessage);
+                pair.Key.Stop();
+            }           
         }
 
-        private void Connect(IEnumerable<ServerConfig> servers)
+        private void Connect(IEnumerable<ServerConfig> serverConfigs)
         {
-            foreach (var server in servers)
+            foreach (var serverConfig in serverConfigs)
             {
-                Connect(server);
+                Connect(serverConfig);
             }
         }
 
-        private void Connect(ServerConfig server)
+        private void Connect(ServerConfig serverConfig)
         {
             var connection = new IrcBot();
             var regInfo = new IrcUserRegistrationInfo()
                 {
-                    NickName = server.NickName,
-                    RealName = server.RealName,
+                    NickName = serverConfig.NickName,
+                    RealName = serverConfig.RealName,
                     UserModes = new List<char> {'i'},
-                    UserName = server.NickName
+                    UserName = serverConfig.NickName
                 };
-            
-            connection.Connect(server.Address,regInfo);
-            connection.Join(server.Channels);
 
-            _connections.Add(connection);
+            connection.OnChannelMessage += ChannelMessage;
+            connection.OnUserMessage += UserMessage;
+
+            connection.Connect(serverConfig.Address,regInfo);
+            connection.Join(serverConfig.Channels);
+
+            _connections.Add(connection, serverConfig);
+        }
+
+        private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
+        {
+            var serverConfig = _connections[ircBot];
+            var firstWord = e.Text.Split(' ')[0];
+            
+            if(serverConfig.ActivePlugins == null)
+            {
+                return;
+            }
+
+            var relevantPlugins = _pluginManager.Plugins.Where(plugin => serverConfig.ActivePlugins.Contains(plugin.Name));
+
+            foreach (var plugin in relevantPlugins)
+            {
+                plugin.OnChannelMessage(ircBot, e);
+
+                if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
+                {
+                    var command = firstWord.Substring(1);
+                    if (plugin.Commands.Contains(command))
+                    {
+                        plugin.IrcCommand(ircBot, e);
+                    }
+                }
+            }           
+        }
+
+        private void UserMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
+        {            
+            var serverConfig = _connections[ircBot];
+            var firstWord = e.Text.Split(' ')[0];
+
+            if (serverConfig.ActivePlugins == null)
+            {
+                return;
+            }
+
+            var relevantPlugins = _pluginManager.Plugins.Where(plugin => serverConfig.ActivePlugins.Contains(plugin.Name));
+
+            foreach (var plugin in relevantPlugins)
+            {
+                plugin.OnUserMessage(ircBot, e);
+
+                if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
+                {
+                    var command = firstWord.Substring(1);
+                    if (plugin.Commands.Contains(command))
+                    {
+                        plugin.IrcCommand(ircBot, e);
+                    }
+                }
+            }           
         }
 
         private void LoadConfiguration()

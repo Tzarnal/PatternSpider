@@ -10,6 +10,8 @@ namespace PatternSpider.Config
         public string NickName;
         public string NickservPassword;
 
+
+        public List<string> ActivePlugins;
         public List<string> Channels;
 
         public ServerConfig()
