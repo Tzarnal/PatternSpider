@@ -28,9 +28,10 @@ namespace PatternSpider
             Connect(_configuration.Servers);
         }
 
-        public void Quit()
+        public void Quit(bool saveConfig = false)
         {
-            _configuration.Save();
+            if(saveConfig)
+                _configuration.Save();
 
             foreach (KeyValuePair<IrcBot, ServerConfig> pair in _connections)
             {

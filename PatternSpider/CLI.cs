@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 
-
 namespace PatternSpider
 {
     class CLI
@@ -19,6 +18,7 @@ namespace PatternSpider
             _commands.Add("quit",Quit);
             _commands.Add("reload",Reload);
             _commands.Add("reloadplugins", ReloadPlugins);
+            _commands.Add("help", Help);
         }
 
         public void Run()
@@ -42,6 +42,13 @@ namespace PatternSpider
             }
         }
 
+        private void Help(string input)
+        {
+            Console.WriteLine("Quit: Closes PatternSpider");
+            Console.WriteLine("Reload: Closes all connections, reloads config files and reconnects based on config files");
+            Console.WriteLine("ReloadPlugins: Reloads plugins files in the Plugin folder, unloads plugins no longer present, loads new plugins.");
+        }
+
         private void Quit(string input)
         {
             _patternSpider.Quit();
@@ -51,7 +58,7 @@ namespace PatternSpider
 
         private void Reload(string input)
         {
-            _patternSpider.Quit();
+            _patternSpider.Quit(saveConfig:true);
             _patternSpider = null;
             _patternSpider = new PatternSpider();
             _patternSpider.Run();            
