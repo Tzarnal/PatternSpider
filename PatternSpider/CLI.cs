@@ -25,6 +25,7 @@ namespace PatternSpider
         {
             while (_isRunning)
             {
+                Console.Write("> ");
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input))
                 {
