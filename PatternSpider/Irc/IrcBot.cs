@@ -170,6 +170,11 @@ namespace PatternSpider.Irc
             Console.Out.WriteLine("Disconnected from '{0}'.", server);
         }
 
+        public void SendMessage(IIrcMessageTarget target, string message)
+        {
+            _ircClient.LocalUser.SendMessage(target, message);
+        }
+
         public void Join(string channel)
         {
             Join(new List<string>{channel});
@@ -298,7 +303,7 @@ namespace PatternSpider.Irc
         private void IrcClientChannelMessageReceived(object sender, IrcMessageEventArgs e)
         {
             var channel = (IrcChannel)sender;
-
+            
             if (e.Source is IrcUser)
             {
                 if (OnChannelMessage != null)

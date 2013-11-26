@@ -73,11 +73,27 @@ namespace PatternSpider
             _connections.Add(connection, serverConfig);
         }
 
+        private void SendReplies(IEnumerable<String> replies, IrcBot server, object source)
+        {
+            if (replies != null)
+            {
+                foreach (var reply in replies)
+                {
+                    SendReply(reply, server, source);
+                }
+            }
+        }
+
+        private void SendReply(string reply, IrcBot server, object source)
+        {
+            server.SendMessage((IIrcMessageTarget) source, reply);
+        }
+
         private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
         {
             var serverConfig = _connections[ircBot];
             var firstWord = e.Text.Split(' ')[0];
-            
+                       
             if(serverConfig.ActivePlugins == null)
             {
                 return;
@@ -87,7 +103,7 @@ namespace PatternSpider
 
             foreach (var plugin in relevantPlugins)
             {
-                plugin.OnChannelMessage(ircBot, e);
+                SendReplies(plugin.OnChannelMessage(ircBot, e),ircBot, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
