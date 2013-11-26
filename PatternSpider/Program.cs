@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Linq;
+using System.Threading;
 
 namespace PatternSpider
 {
@@ -6,14 +7,25 @@ namespace PatternSpider
     {
         static void Main(string[] args)
         {
+            var cliMode = args.Any(arg => arg == "-interactive" || arg == "-i");
+                                   
             var patternSpider = new PatternSpider();
             patternSpider.Run();
             
-            Console.WriteLine("Press any key to quit");
-            Console.ReadKey();
+            if (cliMode)
+            {
+                var cli = new CLI(patternSpider);
+                cli.Run();
+            }
+            else
+            {
+                while (true)
+                {
+                    Thread.Sleep(500);
+                }
+            }
 
-            patternSpider.Quit();
-            
+            patternSpider.Quit();        
         }
     }
 }

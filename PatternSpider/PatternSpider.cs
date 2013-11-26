@@ -34,9 +34,14 @@ namespace PatternSpider
 
             foreach (KeyValuePair<IrcBot, ServerConfig> pair in _connections)
             {
-                pair.Key.Disconnect(_configuration.QuitMessage);
-                pair.Key.Stop();
+                pair.Key.Disconnect();
+                pair.Key.Stop();                
             }           
+        }
+
+        public void ReloadPlugins()
+        {
+            _pluginManager.ReloadPlugins();
         }
 
         private void Connect(IEnumerable<ServerConfig> serverConfigs)

@@ -16,7 +16,6 @@ namespace PatternSpider.Config
 
         public List<ServerConfig> Servers;
         public string CommandSymbol = "!";
-        public string QuitMessage;
         
         public MainConfig()
         {
