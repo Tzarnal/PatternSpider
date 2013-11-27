@@ -89,7 +89,10 @@ namespace Plugin_UrlTitle
                 document.DocumentNode.SelectSingleNode(
                     "//p[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
 
-            return CleanString(statusnode.InnerText);
+            var namenode = document.DocumentNode.SelectSingleNode(
+                    "//strong[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
+
+            return CleanString(string.Format("{0}: {1}",namenode.InnerText,statusnode.InnerText));
         }
 
         private string GetTwitterMobileMessage(string url)
@@ -99,7 +102,10 @@ namespace Plugin_UrlTitle
                 document.DocumentNode.SelectSingleNode(
                     "//div[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
 
-            return CleanString(statusnode.InnerText);
+            var namenode = document.DocumentNode.SelectSingleNode(
+                    "//div[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
+
+            return CleanString(string.Format("{0}: {1}", namenode.InnerText.Trim(), statusnode.InnerText.Trim()));            
         }
 
         private string GetWebPageTitle(string url)
@@ -109,12 +115,14 @@ namespace Plugin_UrlTitle
             if (titlenode == null)
                 return null;
 
-            return titlenode.InnerText;
+            return string.Format("[{0}]", titlenode.InnerText);
         }
 
         private string CleanString(string input)
         {
-            Regex whitespaceRegex = new Regex("\\s");
+            input = WebUtility.HtmlDecode(input);
+
+            Regex whitespaceRegex = new Regex("\\s");            
             return whitespaceRegex.Replace(input," ").Trim();
         }
 
