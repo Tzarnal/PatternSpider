@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternSpider", "PatternSpider\PatternSpider.csproj", "{3B239429-F0A0-4D78-B122-6BB9F39CA7D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Note", "Plugin-Note\Plugin-Note.csproj", "{B3C6CAA6-0B6F-471B-BACC-98978A8CBCEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{3B239429-F0A0-4D78-B122-6BB9F39CA7D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B239429-F0A0-4D78-B122-6BB9F39CA7D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B239429-F0A0-4D78-B122-6BB9F39CA7D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3C6CAA6-0B6F-471B-BACC-98978A8CBCEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3C6CAA6-0B6F-471B-BACC-98978A8CBCEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3C6CAA6-0B6F-471B-BACC-98978A8CBCEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3C6CAA6-0B6F-471B-BACC-98978A8CBCEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

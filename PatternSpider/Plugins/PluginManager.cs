@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using IrcDotNet;
+using System.IO;
+
 
 namespace PatternSpider.Plugins
 {
@@ -17,18 +19,41 @@ namespace PatternSpider.Plugins
         
         public void ReloadPlugins()
         {
-            Plugins = null;
-            LoadPlugins();
+            UnloadPlugins();
+            LoadPlugins();            
         }
 
+        public void UnloadPlugins()
+        {
+            if (Plugins != null)
+            {
+                Plugins = null;
+                Console.WriteLine("Unloaded Plugins");    
+            }            
+        }
+       
         private void LoadPlugins()
         {
+            if (!Directory.Exists("Plugins"))
+            {
+                Directory.CreateDirectory("Plugins");
+            }
+            
             var catalog = new DirectoryCatalog("Plugins", "*.dll");
             
             using (var container = new CompositionContainer(catalog))
             {                
                 container.ComposeParts(this);
             }
+
+            string pluginNames = "";
+
+            foreach (var plugin in Plugins)
+            {
+                pluginNames += " " + plugin.Name;
+            }
+
+            Console.WriteLine("Loaded the following plugins: {0}", pluginNames.Trim());
         }
     }
 }
