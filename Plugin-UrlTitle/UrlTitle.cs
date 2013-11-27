@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using HtmlAgilityPack;
 using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -47,82 +51,103 @@ namespace Plugin_UrlTitle
 
         private void OutputUrlTitle(string url, IrcBot ircBot, string channel)
         {
-            var title = GetWebPageTitle(url);
+            try
+            {
+                const string twitterStatusRegex = @"twitter.com/\w+/status/\d+";
+                const string twitterMobileStatusRegex = @"mobile.twitter.com/\w+/status/\d+";
+                string message;
 
-            ircBot.SendChannelMessage(channel, title);
+
+                if (Regex.IsMatch(url, twitterMobileStatusRegex))
+                {
+                    message = GetTwitterMobileMessage(url);
+                }
+                else if (Regex.IsMatch(url, twitterStatusRegex))
+                {
+                    message = GetTwitterMessage(url);
+                }else
+                {
+                    message = GetWebPageTitle(url);
+                }
+
+                if (message != null)
+                {
+                    ircBot.SendChannelMessage(channel, message);
+                }
+
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+        }
+
+        private string GetTwitterMessage(string url)
+        {
+            var document = UrlRequest(url);
+            var statusnode =
+                document.DocumentNode.SelectSingleNode(
+                    "//p[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
+
+            return CleanString(statusnode.InnerText);
+        }
+
+        private string GetTwitterMobileMessage(string url)
+        {
+            var document = UrlRequest(url);
+            var statusnode =
+                document.DocumentNode.SelectSingleNode(
+                    "//div[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
+
+            return CleanString(statusnode.InnerText);
         }
 
         private string GetWebPageTitle(string url)
         {
-            // Create a request to the url
-
-            HttpWebRequest request;
-
-            //Ensure the url starts with http:// otherwise the httpwebrequest gets confused
-            if (!url.Contains(@"http://") && !url.Contains(@"https://"))
-            {
-                url = "http://" + url;
-            }
-
-            try
-            {
-                request = WebRequest.Create(url) as HttpWebRequest;
-            }
-            catch (Exception)
-            {
+            var document = UrlRequest(url);
+            var titlenode = document.DocumentNode.SelectSingleNode("//head/title");
+            if (titlenode == null)
                 return null;
-            }
 
-            // If the request wasn't an HTTP request (like a file), ignore it
-            if (request == null) return null;
-
-            // Use the user's credentials
-            request.UseDefaultCredentials = true;
-
-            // Obtain a response from the server, if there was an error, return nothing
-            HttpWebResponse response;
-            try
-            {
-                response = request.GetResponse() as HttpWebResponse;
-            }
-            catch (WebException)
-            {
-                return null;
-            }
-
-            // Regular expression for an HTML title
-            const string regex = @"(?<=<title.*>)([\s\S]*?)(?=</title>)";
-
-            // If the correct HTML header exists for HTML text, continue
-            if (response != null && new List<string>(response.Headers.AllKeys).Contains("Content-Type"))
-
-                if (response.Headers["Content-Type"].StartsWith("text/html"))
-                {
-                    // Download the page
-                    var web = new WebClient();
-                    web.UseDefaultCredentials = true;
-
-                    string page;
-                    try
-                    {
-                        page = web.DownloadString(url);
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-
-                    // Extract the title
-                    var ex = new Regex(regex, RegexOptions.IgnoreCase);
-                    string output = ex.Match(page).Value;
-                    output = Regex.Replace(output, @"\s+", " ");
-                    return output.Trim().Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
-
-                }
-
-            // Not a valid HTML page
-            return null;
+            return titlenode.InnerText;
         }
 
+        private string CleanString(string input)
+        {
+            Regex whitespaceRegex = new Regex("\\s");
+            return whitespaceRegex.Replace(input," ").Trim();
+        }
+
+        private HtmlDocument UrlRequest(string url)
+        {
+            var req = (HttpWebRequest)WebRequest.Create(url);
+            req.Method = "GET";
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+
+            var responseStream = req.GetResponse().GetResponseStream();
+            var document = new HtmlDocument();
+
+            if (responseStream == null)
+            {
+                throw new NoNullAllowedException();
+            }
+
+            using (var reader = new StreamReader(responseStream))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    using (var writer = new StreamWriter(memoryStream))
+                    {
+                        writer.Write(reader.ReadToEnd());
+                        memoryStream.Position = 0;
+                        document.Load(memoryStream, new UTF8Encoding());
+                    }
+                }
+            }
+
+            return document;
+        }
+       
     }
 }
