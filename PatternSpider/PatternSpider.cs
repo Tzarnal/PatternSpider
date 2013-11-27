@@ -61,7 +61,7 @@ namespace PatternSpider
         private void Connect(ServerConfig serverConfig)
         {
             var connection = new IrcBot();
-            var regInfo = new IrcUserRegistrationInfo()
+            var regInfo = new IrcUserRegistrationInfo
                 {
                     NickName = serverConfig.NickName,
                     RealName = serverConfig.RealName,
@@ -98,7 +98,7 @@ namespace PatternSpider
         {
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = e.Text.Split(' ')[0];
+            var firstWord = e.Text.Split(' ')[0].ToLower();
             var channelName = ((IrcChannel) source).Name;
        
 
