@@ -77,7 +77,7 @@ namespace Plugin_UrlTitle
 
             }catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+                //Console.WriteLine(e.Message);
             }
             
         }
