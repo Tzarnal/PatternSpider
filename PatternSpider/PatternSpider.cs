@@ -80,20 +80,29 @@ namespace PatternSpider
             connection.Run();
         }
 
-        private void SendReplies(IEnumerable<String> replies, IrcBot server, object source)
+        private void SendReplies(IEnumerable<String> replies, IrcBot server,string user, object source)
         {
             if (replies != null)
             {
                 foreach (var reply in replies)
                 {
-                    SendReply(reply, server, source);
+                    SendReply(reply, server, user, source);
                 }
             }
         }
 
-        private void SendReply(string reply, IrcBot server, object source)
+        private void SendReply(string reply, IrcBot server,string user, object source)
         {
-            server.SendMessage((IIrcMessageTarget) source, reply);
+            var channel = source as IrcChannel;
+            if (channel != null)
+            {
+                server.SendMessage(channel, reply);
+            }
+            else
+            {
+                server.SendQuery(user, reply);
+            }
+            
         }
 
         private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
@@ -113,14 +122,14 @@ namespace PatternSpider
             foreach (var plugin in relevantPlugins)
             {
                 
-                SendReplies(plugin.OnChannelMessage(ircBot, servername, channelName, e),ircBot, source);
+                SendReplies(plugin.OnChannelMessage(ircBot, servername, channelName, e),ircBot, e.Source.Name, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
                     var command = firstWord.Substring(1);
                     if (plugin.Commands.Contains(command))
                     {
-                        SendReplies(plugin.IrcCommand(ircBot, servername, e), ircBot, source);
+                        SendReplies(plugin.IrcCommand(ircBot, servername, e), ircBot, e.Source.Name, source);
                     }
                 }
             }           
@@ -130,7 +139,7 @@ namespace PatternSpider
         {            
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = e.Text.Split(' ')[0];
+            var firstWord = e.Text.Split(' ')[0].ToLower();
 
             if (serverConfig.ActivePlugins == null)
             {
@@ -141,14 +150,14 @@ namespace PatternSpider
 
             foreach (var plugin in relevantPlugins)
             {
-                plugin.OnUserMessage(ircBot, servername, e);
+                SendReplies(plugin.OnUserMessage(ircBot, servername, e), ircBot, e.Source.Name, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
                     var command = firstWord.Substring(1);
                     if (plugin.Commands.Contains(command))
                     {
-                        SendReplies(plugin.IrcCommand(ircBot, servername, e), ircBot, source );
+                        SendReplies(plugin.IrcCommand(ircBot, servername, e), ircBot, e.Source.Name, source);
                     }
                 }
             }           
