@@ -76,6 +76,8 @@ namespace PatternSpider
             connection.Join(serverConfig.Channels);
 
             _connections.Add(connection, serverConfig);
+
+            connection.Run();
         }
 
         private void SendReplies(IEnumerable<String> replies, IrcBot server, object source)

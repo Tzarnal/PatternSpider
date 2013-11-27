@@ -19,7 +19,7 @@ namespace PatternSpider.Irc
         private List<string> _channelsToJoin;
         private IrcRegistrationInfo _registrationInfo;
         private DateTime _lastPing;
-        private readonly TimeSpan _pingInterval = new TimeSpan(0, 1, 0);
+        private readonly TimeSpan _pingInterval = new TimeSpan(0, 2, 0);
 
         public string QuitMessage { get; set; }
         public string Server { get { return _server; }}
@@ -75,7 +75,7 @@ namespace PatternSpider.Irc
         {
             _isRunning = true;
             while (_isRunning)
-            {
+            {                
                 if (_ircClient == null) continue;
                 
                 //Check if we are conneted, if not and we have connection information, give connecting a shot.
@@ -94,7 +94,7 @@ namespace PatternSpider.Irc
                     }
                 }
 
-                //Throw out a ping every minute to check connection.
+                //Throw out a ping every timeinterval to check connection.
                 if (_ircClient.IsRegistered)
                 {
                     if (DateTime.Now - _lastPing > _pingInterval)
@@ -103,6 +103,11 @@ namespace PatternSpider.Irc
                         _lastPing = DateTime.Now;
                     }
                 }                
+
+                if (_ircClient.IsConnected && _ircClient.IsRegistered && !_ircClient.Channels.Any())
+                {
+                    Join(_channelsToJoin);
+                }
 
                 Thread.Sleep(5000);
             }
