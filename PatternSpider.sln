@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Note", "Plugin-Note\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-UrlTitle", "Plugin-UrlTitle\Plugin-UrlTitle.csproj", "{F446B057-99C5-4ABF-9E9D-3D2AF063E0A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Weather", "Plugin-Weather\Plugin-Weather.csproj", "{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{F446B057-99C5-4ABF-9E9D-3D2AF063E0A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F446B057-99C5-4ABF-9E9D-3D2AF063E0A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F446B057-99C5-4ABF-9E9D-3D2AF063E0A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

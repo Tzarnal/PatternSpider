@@ -101,7 +101,6 @@ namespace PatternSpider
             var firstWord = e.Text.Split(' ')[0].ToLower();
             var channelName = ((IrcChannel) source).Name;
        
-
             if(serverConfig.ActivePlugins == null)
             {
                 return;

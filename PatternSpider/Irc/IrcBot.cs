@@ -102,7 +102,7 @@ namespace PatternSpider.Irc
                         _ircClient.Ping();
                         _lastPing = DateTime.Now;
                     }
-                }
+                }                
 
                 Thread.Sleep(5000);
             }
