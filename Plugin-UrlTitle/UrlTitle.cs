@@ -115,7 +115,7 @@ namespace Plugin_UrlTitle
             if (titlenode == null)
                 return null;
 
-            return string.Format("[{0}]", titlenode.InnerText);
+            return string.Format("[{0}]", CleanString(titlenode.InnerText));
         }
 
         private string CleanString(string input)
