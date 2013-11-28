@@ -16,8 +16,6 @@ namespace PatternSpider
             
             _commands = new Dictionary<string, Action<string>>();            
             _commands.Add("quit",Quit);
-            _commands.Add("reload",Reload);
-            _commands.Add("reloadplugins", ReloadPlugins);
             _commands.Add("help", Help);
         }
 
@@ -57,17 +55,5 @@ namespace PatternSpider
             _isRunning = false;            
         }
 
-        private void Reload(string input)
-        {
-            _patternSpider.Quit(saveConfig:true);
-            _patternSpider = null;
-            _patternSpider = new PatternSpider();
-            _patternSpider.Run();            
-        }
-
-        private void ReloadPlugins(string input)
-        {
-            _patternSpider.ReloadPlugins();
-        }
     }
 }
