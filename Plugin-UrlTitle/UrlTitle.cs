@@ -125,8 +125,8 @@ namespace Plugin_UrlTitle
         {
             input = WebUtility.HtmlDecode(input);
 
-            input = input.Replace("", "\n");
-            input = input.Replace("", "\t");
+            input = input.Replace("\n","");
+            input = input.Replace("\t","");
             input = input.Trim();
 
             return input;
