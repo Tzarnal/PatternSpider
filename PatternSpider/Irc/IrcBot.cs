@@ -177,15 +177,31 @@ namespace PatternSpider.Irc
 
         public void SendMessage(IIrcMessageTarget target, string message) //Sends a message to either a channel or user depending on target
         {
-            _ircClient.LocalUser.SendMessage(target, message);
+            try
+            {
+                _ircClient.LocalUser.SendMessage(target, message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: {0}, \n Message {1}", e.Message,message);
+            }
+            
         }
 
         public void SendQuery(string user, string message) //sends a query to a user without having a IrcMessageTarget for them
         {
-            var target = _ircClient.Users.FirstOrDefault(ircUser => ircUser.NickName == user);
-            if (target != null)
+
+            try
             {
-                SendMessage(target, message);
+                var target = _ircClient.Users.FirstOrDefault(ircUser => ircUser.NickName == user);
+                if (target != null)
+                {
+                    SendMessage(target, message);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: {0}, \n Message {1}", e.Message,message);
             }
         }
 

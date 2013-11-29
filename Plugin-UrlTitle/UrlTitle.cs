@@ -122,8 +122,11 @@ namespace Plugin_UrlTitle
         {
             input = WebUtility.HtmlDecode(input);
 
-            Regex whitespaceRegex = new Regex("\\s");            
-            return whitespaceRegex.Replace(input," ").Trim();
+            input = input.Replace("", "\n");
+            input = input.Replace("", "\t");
+            input = input.Trim();
+
+            return input;
         }
 
         private HtmlDocument UrlRequest(string url)
