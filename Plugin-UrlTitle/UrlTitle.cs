@@ -114,8 +114,11 @@ namespace Plugin_UrlTitle
             var titlenode = document.DocumentNode.SelectSingleNode("//head/title");
             if (titlenode == null)
                 return null;
+            
+            var title = Regex.Match(titlenode.InnerText, @"\S+.+").Value;
 
-            return string.Format("[{0}]", CleanString(titlenode.InnerText));
+
+            return string.Format("[{0}]", CleanString(title));
         }
 
         private string CleanString(string input)
