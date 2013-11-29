@@ -173,9 +173,9 @@ namespace Plugin_Weather
                     var desc = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//img").Attributes["alt"].Value);
 
                     var tempDayC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/span").FirstChild.InnerText);
-                    var tempDayF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/span").LastChild.InnerText);
+                    var tempDayF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/span").LastChild.InnerText);
 
-                    var tempNightC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/span").FirstChild.InnerText);
+                    var tempNightC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/span").FirstChild.InnerText);
                     var tempNightF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/span").LastChild.InnerText);
 
                     response.Add(String.Format("{0}: {1} Day {2}°C ({3}°F), Night {4}°C ({5}°F)",

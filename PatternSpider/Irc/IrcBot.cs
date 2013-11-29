@@ -190,7 +190,6 @@ namespace PatternSpider.Irc
 
         public void SendQuery(string user, string message) //sends a query to a user without having a IrcMessageTarget for them
         {
-
             try
             {
                 var target = _ircClient.Users.FirstOrDefault(ircUser => ircUser.NickName == user);
