@@ -31,6 +31,8 @@ namespace PatternSpider.Irc
             }
         }
 
+        public string Nickname { get { return _ircClient.LocalUser.NickName; } }
+
         public IrcBot()
         {
             _isRunning = false;
