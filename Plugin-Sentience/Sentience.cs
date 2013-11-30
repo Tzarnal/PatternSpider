@@ -69,10 +69,14 @@ namespace Plugin_Sentience
                 return new List<string> { response  };                                    
             }
             
-            message = TextSanitizer.SanitizeInput(message);
-            brain.Learn(message);
+            if (message.Split(' ').Length > Windowsize)
+            {
+                message = TextSanitizer.SanitizeInput(message);
+                brain.Learn(message);
 
-            SaveLine(key, message);
+                SaveLine(key, message);    
+            }
+            
 
             return null;
         }
@@ -102,6 +106,7 @@ namespace Plugin_Sentience
                 }
 
                 _brains.Add(key, brain);
+                sr.Close();
                 Console.WriteLine("Sentience: Loaded {0}", key);
             }
         }
