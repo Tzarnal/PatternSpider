@@ -56,12 +56,12 @@ namespace Plugin_Replace
 
                 if (_history[id].HasMatch(original))
                 {
-                    return new List<string>{_history[id].Replace(original,replacement)};                    
+                    return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, _history[id].Replace(original, replacement)) };                    
                 }
                 
                 if (_generalHistory.HasMatch(original))
                 {
-                    return new List<string> {_generalHistory.Replace(original, replacement)};
+                    return new List<string> { string.Format("{0} Thinks you meant: {1}", e.Source.Name, _generalHistory.Replace(original, replacement)) };                    
                 }
 
                 return null;
