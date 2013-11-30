@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-UrlTitle", "Plugin-U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Weather", "Plugin-Weather\Plugin-Weather.csproj", "{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Sentience", "Plugin-Sentience\Plugin-Sentience.csproj", "{F84A3827-9432-4F70-87ED-2A40A433726D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAB9BC68-4B26-4546-8518-AA4B0DE041E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F84A3827-9432-4F70-87ED-2A40A433726D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F84A3827-9432-4F70-87ED-2A40A433726D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F84A3827-9432-4F70-87ED-2A40A433726D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F84A3827-9432-4F70-87ED-2A40A433726D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
