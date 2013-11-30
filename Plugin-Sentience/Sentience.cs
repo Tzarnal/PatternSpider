@@ -30,6 +30,7 @@ namespace Plugin_Sentience
             {
                 Directory.CreateDirectory(BrainPath);
             }
+            PruneBrains();
             LoadBrains();
         }
 
@@ -102,6 +103,39 @@ namespace Plugin_Sentience
 
                 _brains.Add(key, brain);
                 Console.WriteLine("Sentience: Loaded {0}", key);
+            }
+        }
+
+        private void PruneBrains()
+        {
+            var brainFiles = Directory.EnumerateFiles(BrainPath,"*.brain");
+            foreach (var brainfile in brainFiles)
+            {
+                var fileInfo = new FileInfo(brainfile);
+                if (fileInfo.Length > 3145728)
+                {
+                    File.Copy(brainfile,BrainPath+"pruning.brain");
+                    File.Delete(brainfile);
+                    
+                    string line;
+                    var sr = new StreamReader(BrainPath + "pruning.brain");
+                    var sw = new StreamWriter(brainfile);
+                    var rand = new Random();
+
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        if (rand.Next(0, 2) == 1)
+                        {
+                            sw.WriteLine(line); 
+                        }                        
+                    }
+
+                    sr.Close();
+                    sw.Close();
+
+                    File.Delete(BrainPath + "pruning.brain");
+                    Console.WriteLine("Sentience: Pruned {0}", brainfile);
+                }
             }
         }
 
