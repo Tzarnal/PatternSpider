@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace PatternSpider.Utility
 {
-    class DiceRoller
+    public class DiceRoller
     {
         public int RollDice(byte numberSides)
         {
