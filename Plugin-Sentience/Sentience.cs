@@ -20,6 +20,7 @@ namespace Plugin_Sentience
 
         private Dictionary<string, Chain> _brains;
         private const int Windowsize = 4;
+        private readonly object writeLock = new object();
 
         public static string BrainPath = "Plugins/Sentience/";
 
@@ -83,9 +84,12 @@ namespace Plugin_Sentience
 
         private void SaveLine(string key, string message)
         {
-            var fs = File.AppendText(BrainPath + key + ".brain");
-            fs.WriteLine(message);
-            fs.Close();
+            lock (writeLock)
+            {
+                var fs = File.AppendText(BrainPath + key + ".brain");
+                fs.WriteLine(message);
+                fs.Close();
+            }
         }
 
         private void LoadBrains()
