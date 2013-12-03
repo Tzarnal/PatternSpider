@@ -300,7 +300,8 @@ namespace PatternSpider.Irc
             {
                 if (OnUserMessage != null)
                 {
-                    ThreadStart threadStart = () => OnUserMessage(sender, this, e);
+                    var eventArgs = e;
+                    ThreadStart threadStart = () => OnUserMessage(eventArgs, this, e);
                     new Thread(threadStart).Start();
                 }                
             }
@@ -350,7 +351,8 @@ namespace PatternSpider.Irc
                 
                 if (OnChannelMessage != null)
                 {
-                    ThreadStart threadStart = () => OnChannelMessage(sender, this, e);
+                    var eventArgs = e;
+                    ThreadStart threadStart = () => OnChannelMessage(sender, this, eventArgs);
                     new Thread(threadStart).Start();
                 }                
             }
