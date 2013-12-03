@@ -37,8 +37,7 @@ namespace Plugin_UrlTitle
             foreach (var result in results)
             {
                 var r = result;
-                ThreadStart starter = () => OutputUrlTitle(r.ToString(), ircBot, channel);
-                new Thread(starter).Start();
+                OutputUrlTitle(r.ToString(), ircBot, channel);                
             }
 
             return null;

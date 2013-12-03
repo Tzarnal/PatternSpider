@@ -300,7 +300,8 @@ namespace PatternSpider.Irc
             {
                 if (OnUserMessage != null)
                 {
-                    OnUserMessage(sender, this, e);    
+                    ThreadStart threadStart = () => OnUserMessage(sender, this, e);
+                    new Thread(threadStart).Start();
                 }                
             }
         }
@@ -346,9 +347,11 @@ namespace PatternSpider.Irc
             
             if (e.Source is IrcUser)
             {
+                
                 if (OnChannelMessage != null)
                 {
-                    OnChannelMessage(sender,this, e);                    
+                    ThreadStart threadStart = () => OnChannelMessage(sender, this, e);
+                    new Thread(threadStart).Start();
                 }                
             }
         }
