@@ -10,12 +10,12 @@ using PatternSpider.Utility;
 namespace Plugin_Exalted
 {
     [Export(typeof(IPlugin))]    
-    class ExaltedDamage: IPlugin
+    class ExaltedTarget: IPlugin
     {
-        public string Name { get { return "ExaltedDamage"; } }
-        public string Description { get { return "Throws Exalted (2e) damagae dicepools and counts results."; } }
+        public string Name { get { return "ExaltedTarget"; } }
+        public string Description { get { return "Throws Exalted (2e) dicepools against a specific target number and counts successes."; } }
 
-        public List<string> Commands { get { return new List<string>{"ed"}; } }
+        public List<string> Commands { get { return new List<string>{"et"}; } }
 
         private DiceRoller _fate = new DiceRoller();
 
@@ -24,13 +24,19 @@ namespace Plugin_Exalted
             var response = new List<string>();
             var mesasge = e.Text;
             var messageParts = mesasge.Split(' ');
+            int targetNumber;
 
-            if (messageParts.Length < 2)
+            if (messageParts.Length < 3)
             {
-                return new List<string>{"Usage: ed <poolsize> [poolsize]..."};
+                return new List<string> { "Usage: e <target number> <poolsize> [poolsize]..." };
             }
 
-            foreach (var messagePart in messageParts)
+            if (!int.TryParse(messageParts[1], out targetNumber))
+            {
+                return new List<string> { "Usage: e <target number> <poolsize> [poolsize]..." };
+            }
+
+            foreach (var messagePart in messageParts.Skip(2))
             {
                 int poolSize;
                 if (int.TryParse(messagePart,out poolSize))
@@ -41,15 +47,15 @@ namespace Plugin_Exalted
                     }
                     else
                     {
-                        response.Add(string.Format("<{0}> {1}", e.Source.Name, RollPool(poolSize)));
-                    }
+                        response.Add(string.Format("<{0}> {1}", e.Source.Name, RollPool(poolSize, targetNumber)));    
+                    }                    
                 }
             }
 
             return response;
         }
 
-        private string RollPool(int poolSize)
+        private string RollPool(int poolSize, int targetNumber)
         {
             int[] rolls = new int[poolSize];
             var successes = 0;
@@ -58,11 +64,15 @@ namespace Plugin_Exalted
             for (var i = 0; i < poolSize; i++)
             {
                 rolls[i] = _fate.RollDice(10);
-                if (rolls[i] >= 7)
+                if (rolls[i] >= targetNumber)
                 {
                     successes++;
                 }
 
+                if (rolls[i] == 10)
+                {
+                    successes++;
+                }
             }
 
             if (rolls.Length <= 50)
@@ -74,7 +84,14 @@ namespace Plugin_Exalted
                 response += "Rolls: Over 50 rolls, truncated to reduce spam";
             }
             
-            response += string.Format(" -- {0} success(es).",successes);
+            if (successes == 0 && rolls.Contains(1))
+            {
+                response += " -- BOTCH";
+            }
+            else
+            {
+                response += string.Format(" -- {0} success(es).",successes);
+            }
 
             return response;
         }

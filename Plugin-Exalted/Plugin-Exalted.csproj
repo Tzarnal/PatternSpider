@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExaltedTarget.cs" />
     <Compile Include="ExaltedDamage.cs" />
     <Compile Include="ExaltedNormal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

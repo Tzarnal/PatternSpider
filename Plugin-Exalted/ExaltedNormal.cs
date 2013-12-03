@@ -35,7 +35,14 @@ namespace Plugin_Exalted
                 int poolSize;
                 if (int.TryParse(messagePart,out poolSize))
                 {
-                    response.Add(string.Format("<{0}> {1}", e.Source.Name, RollPool(poolSize)));
+                    if (poolSize > 2000)
+                    {
+                        response.Add("No Pools over 2000.");
+                    }
+                    else
+                    {
+                        response.Add(string.Format("<{0}> {1}", e.Source.Name, RollPool(poolSize)));
+                    }
                 }
             }
 
