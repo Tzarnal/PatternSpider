@@ -107,9 +107,10 @@ namespace PatternSpider
 
         private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
         {
+            var eventArgs = e;            
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = e.Text.Split(' ')[0].ToLower();
+            var firstWord = eventArgs.Text.Split(' ')[0].ToLower();
             var channelName = ((IrcChannel) source).Name;
        
             if(serverConfig.ActivePlugins == null)
@@ -121,25 +122,28 @@ namespace PatternSpider
 
             foreach (var plugin in relevantPlugins)
             {
-                
-                SendReplies(plugin.OnChannelMessage(ircBot, servername, channelName, e),ircBot, e.Source.Name, source);
+
+                SendReplies(plugin.OnChannelMessage(ircBot, servername, channelName, eventArgs), ircBot, eventArgs.Source.Name, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
                     var command = firstWord.Substring(1);
                     if (plugin.Commands.Contains(command))
                     {
-                        SendReplies(plugin.IrcCommand(ircBot, servername, e), ircBot, e.Source.Name, source);
+                        SendReplies(plugin.IrcCommand(ircBot, servername, eventArgs), ircBot, eventArgs.Source.Name, source);
                     }
                 }
             }           
         }
 
         private void UserMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
-        {            
+        {
+            var eventArgs = e;
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = e.Text.Split(' ')[0].ToLower();
+            var firstWord = eventArgs.Text.Split(' ')[0].ToLower();
+            
+
 
             if (serverConfig.ActivePlugins == null)
             {
@@ -150,14 +154,14 @@ namespace PatternSpider
 
             foreach (var plugin in relevantPlugins)
             {
-                SendReplies(plugin.OnUserMessage(ircBot, servername, e), ircBot, e.Source.Name, source);
+                SendReplies(plugin.OnUserMessage(ircBot, servername, eventArgs), ircBot, eventArgs.Source.Name, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
                     var command = firstWord.Substring(1);
                     if (plugin.Commands.Contains(command))
                     {
-                        SendReplies(plugin.IrcCommand(ircBot, servername, e), ircBot, e.Source.Name, source);
+                        SendReplies(plugin.IrcCommand(ircBot, servername, eventArgs), ircBot, eventArgs.Source.Name, source);
                     }
                 }
             }           

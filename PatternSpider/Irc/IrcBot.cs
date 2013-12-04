@@ -300,9 +300,17 @@ namespace PatternSpider.Irc
             {
                 if (OnUserMessage != null)
                 {
-                    var eventArgs = e;
-                    ThreadStart threadStart = () => OnUserMessage(eventArgs, this, e);
-                    new Thread(threadStart).Start();
+                    try
+                    {
+                        ThreadStart threadStart = () => OnUserMessage(sender, this, e);
+                        new Thread(threadStart).Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                        Console.WriteLine("UserMessageReceived Exception: " + ex.Message);
+                    }
+                    
                 }                
             }
         }
@@ -351,9 +359,16 @@ namespace PatternSpider.Irc
                 
                 if (OnChannelMessage != null)
                 {
-                    var eventArgs = e;
-                    ThreadStart threadStart = () => OnChannelMessage(sender, this, eventArgs);
-                    new Thread(threadStart).Start();
+                    try
+                    {
+                        ThreadStart threadStart = () => OnChannelMessage(sender, this, e);
+                        new Thread(threadStart).Start();
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("UserMessageReceived Exception: " + ex.Message);
+                    }                    
                 }                
             }
         }
