@@ -104,7 +104,7 @@ namespace PatternSpider
             }
             
         }
-
+       
         private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
         {
             var eventArgs = e;            
@@ -143,8 +143,6 @@ namespace PatternSpider
             var servername = serverConfig.Address;
             var firstWord = eventArgs.Text.Split(' ')[0].ToLower();
             
-
-
             if (serverConfig.ActivePlugins == null)
             {
                 return;

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Replace", "Plugin-Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Exalted", "Plugin-Exalted\Plugin-Exalted.csproj", "{2C54590E-0FCF-4558-92DC-E255A74E7C74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Fudge", "Plugin-Fudge\Plugin-Fudge.csproj", "{C5933379-DAFA-4B4B-B8D5-4F30A1994ACD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{2C54590E-0FCF-4558-92DC-E255A74E7C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C54590E-0FCF-4558-92DC-E255A74E7C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C54590E-0FCF-4558-92DC-E255A74E7C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5933379-DAFA-4B4B-B8D5-4F30A1994ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5933379-DAFA-4B4B-B8D5-4F30A1994ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5933379-DAFA-4B4B-B8D5-4F30A1994ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5933379-DAFA-4B4B-B8D5-4F30A1994ACD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
