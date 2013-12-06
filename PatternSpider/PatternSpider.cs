@@ -110,7 +110,7 @@ namespace PatternSpider
             var eventArgs = e;            
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = eventArgs.Text.Split(' ')[0].ToLower();
+            var firstWord = eventArgs.Text.Trim().Split(' ')[0].ToLower();
             var channelName = ((IrcChannel) source).Name;
        
             if(serverConfig.ActivePlugins == null)
@@ -141,7 +141,7 @@ namespace PatternSpider
             var eventArgs = e;
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = eventArgs.Text.Split(' ')[0].ToLower();
+            var firstWord = eventArgs.Text.Trim().Split(' ')[0].ToLower();
             
             if (serverConfig.ActivePlugins == null)
             {
