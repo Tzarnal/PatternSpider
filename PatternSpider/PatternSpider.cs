@@ -40,16 +40,6 @@ namespace PatternSpider
             }           
         }
 
-        public void UnloadPlugins()
-        {
-            _pluginManager.UnloadPlugins();
-        }
-       
-        public void ReloadPlugins()
-        {
-            _pluginManager.ReloadPlugins();
-        }
-
         private void Connect(IEnumerable<ServerConfig> serverConfigs)
         {
             foreach (var serverConfig in serverConfigs)

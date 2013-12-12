@@ -15,8 +15,9 @@ namespace PatternSpider
             _patternSpider = patternSpider;
             
             _commands = new Dictionary<string, Action<string>>();            
-            _commands.Add("quit",Quit);
-            _commands.Add("help", Help);
+            _commands.Add("quit", Quit);
+            _commands.Add("help", Help);            
+            _commands.Add("restart", Restart);
         }
 
         public void Run()
@@ -44,8 +45,15 @@ namespace PatternSpider
         private void Help(string input)
         {
             Console.WriteLine("Quit: Closes PatternSpider");
-            Console.WriteLine("Reload: Closes all connections, reloads config files and reconnects based on config files");
-            Console.WriteLine("ReloadPlugins: Reloads plugins files in the Plugin folder, unloads plugins no longer present, loads new plugins.");
+            Console.WriteLine("Restart: Restarts Patternspider"); 
+        }
+
+        private void Restart(string input)
+        {          
+            _patternSpider.Quit(saveConfig:true);
+            Thread.Sleep(2000);
+            _patternSpider = new PatternSpider();
+            _patternSpider.Run();
         }
 
         private void Quit(string input)

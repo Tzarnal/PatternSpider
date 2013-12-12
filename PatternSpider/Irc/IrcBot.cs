@@ -276,8 +276,8 @@ namespace PatternSpider.Irc
         }
 
         private void IrcClientRegistered(object sender, EventArgs e)
-        {
-            var client = (IrcClient)sender;
+        {            
+            var client = (IrcClient)sender;            
 
             client.LocalUser.NoticeReceived += IrcClientLocalUserNoticeReceived;
             client.LocalUser.MessageReceived += IrcClientLocalUserMessageReceived;
@@ -307,7 +307,7 @@ namespace PatternSpider.Irc
         }
 
         private void IrcClientLocalUserJoinedChannel(object sender, IrcChannelEventArgs e)
-        {
+        {            
             var localUser = (IrcLocalUser)sender;
 
             e.Channel.UserJoined += IrcClientChannelUserJoined;
@@ -317,7 +317,7 @@ namespace PatternSpider.Irc
         }
 
         private void IrcClientLocalUserLeftChannel(object sender, IrcChannelEventArgs e)
-        {
+        {            
             var localUser = (IrcLocalUser)sender;
 
             e.Channel.UserJoined -= IrcClientChannelUserJoined;
@@ -342,7 +342,7 @@ namespace PatternSpider.Irc
         }
 
         private void IrcClientChannelMessageReceived(object sender, IrcMessageEventArgs e)
-        {
+        {            
             var channel = (IrcChannel)sender;
             
             if (e.Source is IrcUser)
