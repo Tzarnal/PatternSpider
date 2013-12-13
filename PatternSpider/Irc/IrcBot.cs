@@ -18,7 +18,9 @@ namespace PatternSpider.Irc
         private string _server;
         private List<string> _channelsToJoin;
         private IrcRegistrationInfo _registrationInfo;
-        private DateTime _lastPing;
+        private DateTime _lastPingSent;
+        private DateTime _lastPingPongReceived;
+        private readonly  TimeSpan _PingTimeOut = new TimeSpan(0,5,0);
         private readonly TimeSpan _pingInterval = new TimeSpan(0, 2, 0);
 
         public string QuitMessage { get; set; }
@@ -37,7 +39,7 @@ namespace PatternSpider.Irc
         {
             _isRunning = false;
             _channelsToJoin = new List<string>();
-            _lastPing = DateTime.Now;
+            _lastPingSent = DateTime.Now;
         }
 
         ~IrcBot()
@@ -99,12 +101,18 @@ namespace PatternSpider.Irc
                 //Throw out a ping every timeinterval to check connection.
                 if (_ircClient.IsRegistered)
                 {
-                    if (DateTime.Now - _lastPing > _pingInterval)
+                    if (DateTime.Now - _lastPingSent > _pingInterval)
                     {
                         _ircClient.Ping();
-                        _lastPing = DateTime.Now;
+                        _lastPingSent = DateTime.Now;                        
                     }
-                }                
+                }
+
+                if (DateTime.Now - _lastPingSent > _PingTimeOut)
+                {
+                    Console.WriteLine("Connection Timed Out: " + _ircClient.ServerName);
+                    _ircClient.Disconnect();
+                }
 
                 if (_ircClient.IsConnected && _ircClient.IsRegistered && !_ircClient.Channels.Any())
                 {
@@ -283,8 +291,20 @@ namespace PatternSpider.Irc
             client.LocalUser.MessageReceived += IrcClientLocalUserMessageReceived;
             client.LocalUser.JoinedChannel += IrcClientLocalUserJoinedChannel;
             client.LocalUser.LeftChannel += IrcClientLocalUserLeftChannel;
+            client.PingReceived += IrcClientPingReceived;
+            client.PongReceived += IrcClientPongReceived;
 
             Join(_channelsToJoin);
+        }
+
+        private void IrcClientPingReceived(object sender, IrcPingOrPongReceivedEventArgs e)
+        {
+            _lastPingPongReceived = DateTime.Now;
+        }
+
+        private void IrcClientPongReceived(object sender, IrcPingOrPongReceivedEventArgs e)
+        {
+            _lastPingPongReceived = DateTime.Now;
         }
 
         private void IrcClientLocalUserNoticeReceived(object sender, IrcMessageEventArgs e)
