@@ -19,10 +19,9 @@ namespace PatternSpider.Irc
         private List<string> _channelsToJoin;
         private IrcRegistrationInfo _registrationInfo;
         private DateTime _lastPingSent;
-        private DateTime _lastPingPongReceived;
-        private readonly  TimeSpan _pingTimeOut = new TimeSpan(0,5,0);
-        private readonly TimeSpan _pingInterval = new TimeSpan(0, 2, 0);
-
+        private DateTime _lastCommunicationReceived;
+        private readonly  TimeSpan _pingInterval = new TimeSpan(0, 5, 0);
+        private readonly  TimeSpan _pingTimeOut = new TimeSpan(0, 5, 0);        
         public string QuitMessage { get; set; }
         public string Server { get { return _server; }}
         public List<String> Channels 
@@ -104,11 +103,12 @@ namespace PatternSpider.Irc
                     if (DateTime.Now - _lastPingSent > _pingInterval)
                     {
                         _ircClient.Ping();
+                        SendMessage(_ircClient.LocalUser,"ping");
                         _lastPingSent = DateTime.Now;                        
                     }
                 }
 
-                if (DateTime.Now - _lastPingPongReceived > _pingTimeOut)
+                if (DateTime.Now - _lastCommunicationReceived > _pingTimeOut)
                 {
                     Console.WriteLine("Connection timed out: " + _ircClient.ServerName);
                     _ircClient.Disconnect();
@@ -294,17 +294,19 @@ namespace PatternSpider.Irc
             client.PingReceived += IrcClientPingReceived;
             client.PongReceived += IrcClientPongReceived;
 
+            _lastCommunicationReceived = DateTime.Now;
+
             Join(_channelsToJoin);
         }
 
         private void IrcClientPingReceived(object sender, IrcPingOrPongReceivedEventArgs e)
         {
-            _lastPingPongReceived = DateTime.Now;
+            _lastCommunicationReceived = DateTime.Now;
         }
 
         private void IrcClientPongReceived(object sender, IrcPingOrPongReceivedEventArgs e)
         {
-            _lastPingPongReceived = DateTime.Now;
+            _lastCommunicationReceived = DateTime.Now;
         }
 
         private void IrcClientLocalUserNoticeReceived(object sender, IrcMessageEventArgs e)
@@ -315,6 +317,7 @@ namespace PatternSpider.Irc
         private void IrcClientLocalUserMessageReceived(object sender, IrcMessageEventArgs e)
         {
             var localUser = (IrcLocalUser)sender;
+            _lastCommunicationReceived = DateTime.Now;
 
             if (e.Source is IrcUser)
             {
@@ -364,7 +367,8 @@ namespace PatternSpider.Irc
         private void IrcClientChannelMessageReceived(object sender, IrcMessageEventArgs e)
         {            
             var channel = (IrcChannel)sender;
-            
+            _lastCommunicationReceived = DateTime.Now;
+
             if (e.Source is IrcUser)
             {                
                 if (OnChannelMessage != null)
