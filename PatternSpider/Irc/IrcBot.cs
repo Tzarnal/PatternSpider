@@ -20,7 +20,7 @@ namespace PatternSpider.Irc
         private IrcRegistrationInfo _registrationInfo;
         private DateTime _lastPingSent;
         private DateTime _lastPingPongReceived;
-        private readonly  TimeSpan _PingTimeOut = new TimeSpan(0,5,0);
+        private readonly  TimeSpan _pingTimeOut = new TimeSpan(0,5,0);
         private readonly TimeSpan _pingInterval = new TimeSpan(0, 2, 0);
 
         public string QuitMessage { get; set; }
@@ -108,9 +108,9 @@ namespace PatternSpider.Irc
                     }
                 }
 
-                if (DateTime.Now - _lastPingSent > _PingTimeOut)
+                if (DateTime.Now - _lastPingPongReceived > _pingTimeOut)
                 {
-                    Console.WriteLine("Connection Timed Out: " + _ircClient.ServerName);
+                    Console.WriteLine("Connection timed out: " + _ircClient.ServerName);
                     _ircClient.Disconnect();
                 }
 
