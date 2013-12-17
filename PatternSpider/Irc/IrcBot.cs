@@ -110,7 +110,11 @@ namespace PatternSpider.Irc
 
                 if (DateTime.Now - _lastCommunicationReceived > _pingTimeOut)
                 {
-                    Console.WriteLine("Connection timed out: " + _ircClient.ServerName);
+                    var serverName = _ircClient.ServerName;
+                    if (string.IsNullOrWhiteSpace(serverName))
+                        serverName = _server;
+
+                    Console.WriteLine("Connection timed out: " + serverName);
                     _ircClient.Disconnect();
                 }
 
