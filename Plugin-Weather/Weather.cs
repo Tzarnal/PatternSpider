@@ -137,7 +137,7 @@ namespace Plugin_Weather
                 var windkmh = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_ws']").InnerText);
                 var windmph = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_tws']").InnerText);
 
-                return new List<string> { String.Format("Weather for {6}: {0}°C ({1}°F) and {2}, {3} Humidity and {4} ({5}) Winds.",
+                return new List<string> { String.Format("Weather for {6}: {1}°C ({0}°F) and {2}, {3} Humidity and {4} ({5}) Winds.",
                                                             tempC,tempF,weatherDescription,humidity,windkmh,windmph,siteLocation)};
 
             }
