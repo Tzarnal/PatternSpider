@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -12,7 +15,7 @@ namespace Plugin_Math
     class Math : IPlugin
     {
         public string Name { get { return "Math"; } }
-        public string Description { get { return "Returns a pong, when invoked with !ping"; } }
+        public string Description { get { return "Does basic math operations ."; } }
 
         public List<string> Commands { get { return new List<string> { "math","m","calculate","calc" }; } }
 
@@ -22,7 +25,15 @@ namespace Plugin_Math
             var messageParts = e.Text.Split(' ');
             var message = string.Join(" ", messageParts.Skip(1));
 
-            return new List<string> { CalculateString(message).ToString(CultureInfo.InvariantCulture) };
+            try
+            {
+                return new List<string> {CalculateString(message).ToString(CultureInfo.InvariantCulture)};
+            }
+            catch (InvalidExpressionException)
+            {
+                return new List<string> {"Not a valid mathematical Expression."};
+            }
+            
         }
 
         public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
@@ -37,8 +48,20 @@ namespace Plugin_Math
 
         private double CalculateString(string input)
         {
+            if (Regex.Match(input, @"[abcefghijklmnopqrstuvwxyz]").Success)
+                throw new InvalidExpressionException();
+
             var sc = new MSScriptControl.ScriptControl {Language = "VBScript"};
-            return sc.Eval(input);        
+
+
+            try
+            {
+                return sc.Eval(input);
+            }
+            catch (COMException)
+            {
+                throw new InvalidExpressionException();
+            }      
         }
     }
 }
