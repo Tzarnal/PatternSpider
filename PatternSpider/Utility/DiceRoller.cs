@@ -10,7 +10,15 @@ namespace PatternSpider.Utility
         {
             return InternalRollDice(numberSides);
         }
-        
+
+        public int RollDice(int numberSides)
+        {
+            if(numberSides > 255 || numberSides < 0)
+                throw new InvalidCastException("Argument larger than 255 or smaller than 0.");
+            
+            return InternalRollDice((byte)numberSides);
+        }
+
         // cheap copy and paste but w/e if it works
         //  http://msdn.microsoft.com/en-us/library/system.security.cryptography.rngcryptoserviceprovider.aspx
         private byte InternalRollDice(byte numberSides)
