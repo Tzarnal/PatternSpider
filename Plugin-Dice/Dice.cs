@@ -18,7 +18,7 @@ namespace Plugin_Dice
         public string Name { get { return "Dice"; } }
         public string Description { get { return "Rolls generic dice expressions, capable of doing math with results."; } }
 
-        public List<string> Commands { get { return new List<string> { "dice","d","roll","r" }; } }
+        public List<string> Commands { get { return new List<string> { "dice", "d", "roll", "r", "d100", "d20", "d12", "d10", "d8", "d6", "d4" }; } }
         private string _diceResults;
         private DiceRoller _genie = new DiceRoller();
 
@@ -28,6 +28,31 @@ namespace Plugin_Dice
             var processedMessage = string.Join(" ", messageParts.Skip(1));
             var name = e.Source.Name;                     
             var response = new List<string>();
+
+            switch (messageParts[0].Substring(1))
+            {
+                case "d100":
+                    processedMessage = "1d100 " + processedMessage;
+                    break;
+                case "d20":
+                    processedMessage = "1d20 " +processedMessage;
+                    break;
+                case "d12":
+                    processedMessage = "1d12 " + processedMessage;
+                    break;
+                case "d10":
+                    processedMessage = "1d10 " + processedMessage;
+                    break;
+                case "d8":
+                    processedMessage = "1d8 " + processedMessage;
+                    break;
+                case "d6":
+                    processedMessage = "1d6 " + processedMessage;
+                    break;
+                case "d4":
+                    processedMessage = "1d4 " + processedMessage;
+                    break;
+            }
 
             do
             {
@@ -55,7 +80,7 @@ namespace Plugin_Dice
 
 
             var total = CalculateString(processedMessage);
-            if (total != 0 && total.ToString(CultureInfo.InvariantCulture) != processedMessage)
+            if (total != 0 && total.ToString(CultureInfo.InvariantCulture) != processedMessage.Trim())
             {
                 response.Add(string.Format("{0} -- Result: {1}", name, total));
             }
