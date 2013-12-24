@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Linq;
@@ -30,10 +31,23 @@ namespace Plugin_Dice
 
             do
             {
-                processedMessage = RollsToNumbers(processedMessage);
+                try
+                {
+                    processedMessage = RollsToNumbers(processedMessage);
+                }
+                catch (ArgumentException ex)
+                {
+                    
+                    return new List<string>{ string.Format("{0} -- {1}", name,  ex.Message)};
+                }
+                                
 
                 if (!string.IsNullOrWhiteSpace(_diceResults))
                 {
+                    if (_diceResults.Length > 140)
+                    {
+                        _diceResults = "rolls over 140 character, truncated to reduce spam";
+                    }
                     response.Add(string.Format("{0} -- {2} -- {1}", name, processedMessage, _diceResults));
                 }
 
@@ -46,7 +60,15 @@ namespace Plugin_Dice
                 response.Add(string.Format("{0} -- Result: {1}", name, total));
             }
 
-            return response;
+            if (response.Any())
+            {
+                return response;
+            }
+            else
+            {
+                return new List<string>{"No dice to roll and not a mathematical expression."};
+            }
+            
         }
 
         public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
@@ -63,23 +85,42 @@ namespace Plugin_Dice
         {
             _diceResults = "";
             var output = input;
-            var diceRegex = new Regex(@"\dd\d", RegexOptions.IgnoreCase);
+            var diceRegex = new Regex(@"\d*d\d+", RegexOptions.IgnoreCase);
 
             foreach (Match match in diceRegex.Matches(input))
             {
                 if (match.Success)
                 {
                     var numbers = match.Value.ToLower().Split('d');
+
+                    if (string.IsNullOrWhiteSpace(numbers[0]))
+                    {
+                        numbers[0] = "1";
+                    }
+                   
                     var dieSize = int.Parse(numbers[1]);
-                    var amountThrown = int.Parse(numbers[0]);
+                    var amountThrown = int.Parse(numbers[0]);    
+                                        
                     var total = 0;
                     var diceResults = new List<int>();
 
+                    if (amountThrown > 9999)
+                    {
+                        throw new ArgumentException("No Rolls with more than 9999 Dice");
+                    }
+
                     for (var i = 0; i < amountThrown; i++)
                     {
-                        var result =  _genie.RollDice(dieSize);
-                        diceResults.Add(result);
-                        total += result;
+                        try
+                        {
+                            var result = _genie.RollDice(dieSize);
+                            diceResults.Add(result);
+                            total += result;
+                        }
+                        catch (InvalidCastException)
+                        {
+                            throw new ArgumentException("No Die sizes over 255");
+                        }                                                
                     }
 
                     var repRegex = new Regex(match.Value, RegexOptions.IgnoreCase);
@@ -95,7 +136,7 @@ namespace Plugin_Dice
         {
             var sc = new MSScriptControl.ScriptControl {Language = "VBScript"};
 
-            if (Regex.Match(input, @"[abcefghijklmnopqrstuvwxyz]").Success)
+            if (Regex.Match(input, @"[abcdefghijklmnopqrstuvwxyz]").Success)
                 return 0;
 
             try
