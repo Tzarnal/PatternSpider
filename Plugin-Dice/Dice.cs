@@ -117,14 +117,24 @@ namespace Plugin_Dice
                 if (match.Success)
                 {
                     var numbers = match.Value.ToLower().Split('d');
+                    int dieSize;
+                    int amountThrown;
 
                     if (string.IsNullOrWhiteSpace(numbers[0]))
                     {
                         numbers[0] = "1";
                     }
                    
-                    var dieSize = int.Parse(numbers[1]);
-                    var amountThrown = int.Parse(numbers[0]);    
+                    try
+                    {
+                        dieSize = int.Parse(numbers[1]);
+                        amountThrown = int.Parse(numbers[0]);
+                    }
+                    catch (OverflowException e)
+                    {
+                        throw new ArgumentException("Die size or roll size exceeds " + Int32.MaxValue);
+                    }
+                    
                                         
                     var total = 0;
                     var diceResults = new List<int>();
@@ -136,16 +146,9 @@ namespace Plugin_Dice
 
                     for (var i = 0; i < amountThrown; i++)
                     {
-                        try
-                        {
-                            var result = _genie.RollDice(dieSize);
-                            diceResults.Add(result);
-                            total += result;
-                        }
-                        catch (InvalidCastException)
-                        {
-                            throw new ArgumentException("No Die sizes over 255");
-                        }                                                
+                        var result = _genie.RollDice(dieSize);
+                        diceResults.Add(result);
+                        total += result;                                            
                     }
 
                     var repRegex = new Regex(match.Value, RegexOptions.IgnoreCase);

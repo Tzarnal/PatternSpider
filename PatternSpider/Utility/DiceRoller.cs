@@ -13,10 +13,22 @@ namespace PatternSpider.Utility
 
         public int RollDice(int numberSides)
         {
-            if(numberSides > 255 || numberSides < 0)
-                throw new InvalidCastException("Argument larger than 255 or smaller than 0.");
+            if (numberSides < 0)
+            {
+                throw new ArgumentException("Die size less than 0.");
+            } 
             
-            return InternalRollDice((byte)numberSides);
+            if (numberSides > UInt16.MaxValue)
+            {
+                throw new ArgumentException("No die size larger than " + (UInt16.MaxValue));
+            }
+
+            if (numberSides <= 255)
+            {
+                return InternalRollDice((byte)numberSides);
+            }
+
+            return InternalRollDice(numberSides);
         }
 
         // cheap copy and paste but w/e if it works
@@ -41,6 +53,7 @@ namespace PatternSpider.Utility
             return (byte)((randomNumber[0] % numberSides) + 1);
         }
 
+
         private static bool IsFairRoll(byte roll, byte numSides)
         {
             // There are MaxValue / numSides full sets of numbers that can come up
@@ -56,5 +69,28 @@ namespace PatternSpider.Utility
             return roll < numSides * fullSetsOfValues;
         }
 
+
+        private int InternalRollDice(int numberSides)
+        {
+            if (numberSides <= 0)
+                return 1;
+            
+            var rngCsp = new RNGCryptoServiceProvider();           
+            var randomNumber = new byte[2];
+
+            do
+            {                
+                rngCsp.GetBytes(randomNumber);
+            } while (!IsFairRoll(randomNumber, numberSides));
+
+            return (BitConverter.ToUInt16(randomNumber, 0) % numberSides) + 1;
+        }
+
+        private static bool IsFairRoll(byte[] roll, int numSides)
+        {
+            int fullSetsOfValues = UInt16.MaxValue / numSides;
+
+            return BitConverter.ToUInt16(roll,0) < numSides*fullSetsOfValues;
+        }
     }
 }
