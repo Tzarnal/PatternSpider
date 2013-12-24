@@ -48,7 +48,7 @@ namespace Plugin_Math
 
         private double CalculateString(string input)
         {
-            if (Regex.Match(input, @"[abcefghijklmnopqrstuvwxyz]").Success)
+            if (Regex.Match(input, @"[abcdefghijklmnopqrstuvwxyz]").Success)
                 throw new InvalidExpressionException();
 
             var sc = new MSScriptControl.ScriptControl {Language = "VBScript"};
