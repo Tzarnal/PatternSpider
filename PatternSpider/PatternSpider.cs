@@ -96,8 +96,14 @@ namespace PatternSpider
         }
        
         private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
-        {
+        {                      
             var eventArgs = e;            
+            
+            if(string.IsNullOrWhiteSpace(eventArgs.Text) )
+            {
+                return;
+            }
+
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
             var firstWord = eventArgs.Text.Trim().Split(' ')[0].ToLower();
