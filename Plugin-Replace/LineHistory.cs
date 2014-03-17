@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Management.Instrumentation;
-using System.Text.RegularExpressions;
 
 namespace Plugin_Replace
 {
