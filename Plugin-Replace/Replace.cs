@@ -98,7 +98,8 @@ namespace Plugin_Replace
 
         public string ReplaceGlobal(string line, string original, string replacement)
         {
-            return line.Replace(original, replacement).Trim();   
+            var regex = new Regex(Regex.Escape(original));
+            return regex.Replace(line, replacement).Trim();    
         }
     }
 }
