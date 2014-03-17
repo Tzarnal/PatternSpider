@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Management.Instrumentation;
+using System.Text.RegularExpressions;
 
 namespace Plugin_Replace
 {
@@ -39,11 +40,25 @@ namespace Plugin_Replace
             {
                 if (line.Contains(original))
                 {
-                    return line.Replace(original, replacement);
+                    var regex = new Regex(Regex.Escape(original));
+                    return regex.Replace(line, replacement, 1);                   
                 }
             }
 
             throw new InstanceNotFoundException("Could not find "+original+" in History");
+        }
+
+        public string ReplaceGlobal(string original, string replacement)
+        {
+            foreach (var line in _history.Reverse())
+            {
+                if (line.Contains(original))
+                {
+                    return line.Replace(original, replacement);
+                }
+            }
+
+            throw new InstanceNotFoundException("Could not find " + original + " in History");
         }
     }
 }

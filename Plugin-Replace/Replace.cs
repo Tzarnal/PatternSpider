@@ -32,8 +32,8 @@ namespace Plugin_Replace
         public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
         {
             var id = channel + e.Source.Name;
-            var line = e.Text;
-            var expresion = @"[sr][/\\\\](.+)[/\\\\](.+)";
+            var line = e.Text.Trim();
+            var expresion = @"\A[sr][/\\\\](.+)[/\\\\](.+)";
 
             if (!_history.ContainsKey(id))
             {
@@ -53,7 +53,6 @@ namespace Plugin_Replace
                     replacement = replacement.Substring(0, rLastChar);
                 }
 
-
                 if (_history[id].HasMatch(original))
                 {
                     return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, _history[id].Replace(original, replacement)) };                    
@@ -67,7 +66,6 @@ namespace Plugin_Replace
                 return null;
             }
             
-
             _generalHistory.AddLine(line);
             _history[id].AddLine(line);
 
