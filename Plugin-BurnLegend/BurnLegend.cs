@@ -122,16 +122,20 @@ namespace Plugin_BurnLegend
         }
 
         public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
-        {
-            var messageParts = e.Text.Split(' ');
-            var subcommand = messageParts[1].ToLower();
+        {                       
+            var messageParts = e.Text.ToLower().Split(' ');
 
-            if (subcommand == "help")
+            if (messageParts.Length >= 2)
             {
-                return HelpText();
-
+                if (Commands.Contains(messageParts[0]))
+                {
+                    if (messageParts[1] == "help")
+                    {
+                        return HelpText();
+                    }
+                }
             }
-
+                      
             return null;
         }
 
