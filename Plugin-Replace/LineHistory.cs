@@ -34,31 +34,18 @@ namespace Plugin_Replace
             _history[_history.Length-1] = line;
         }
 
-        public string Replace(string original, string replacement)
+        public string GetLine(string text)
         {
             foreach (var line in _history.Reverse())
             {
-                if (line.Contains(original))
+                if (line.Contains(text))
                 {
-                    var regex = new Regex(Regex.Escape(original));
-                    return regex.Replace(line, replacement, 1);                   
+                    return line;
                 }
             }
 
-            throw new InstanceNotFoundException("Could not find "+original+" in History");
+            throw new InstanceNotFoundException("Could not find " + text + " in History");
         }
 
-        public string ReplaceGlobal(string original, string replacement)
-        {
-            foreach (var line in _history.Reverse())
-            {
-                if (line.Contains(original))
-                {
-                    return line.Replace(original, replacement);
-                }
-            }
-
-            throw new InstanceNotFoundException("Could not find " + original + " in History");
-        }
     }
 }

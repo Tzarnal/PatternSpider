@@ -33,37 +33,45 @@ namespace Plugin_Replace
         {
             var id = channel + e.Source.Name;
             var line = e.Text.Trim();
-            var expresion = @"\A[sr][/\\\\](.+)[/\\\\](.+)";
-
-            if (!_history.ContainsKey(id))
-            {
-                _history.Add(id, new LineHistory(5));
-            }
+            var expresion = @"\A[sr][/\\\\](.+?)[/\\\\](.+?)(?:[/\\\\]g)?";
 
             if (Regex.IsMatch(line, expresion))
             {
                 var match = Regex.Match(line, expresion);
                 var original = match.Groups[1].Value;
                 var replacement = match.Groups[2].Value;
-                
+                var global = false;
 
-                var rLastChar = replacement.Length-1;
-                if(replacement[rLastChar] == '\\' || replacement[rLastChar] == '/')
+                var lineLastCharIndex = line.Length - 1;
+                if (line.ToLower()[lineLastCharIndex] == 'g' && (line[lineLastCharIndex-1] == '\\' || line[lineLastCharIndex-1] == '/'))
                 {
-                    replacement = replacement.Substring(0, rLastChar);
+                    global = true;
                 }
 
+                var rLastCharIndex = replacement.Length-1;
+                if(replacement[rLastCharIndex] == '\\' || replacement[rLastCharIndex] == '/')
+                {
+                    replacement = replacement.Substring(0, rLastCharIndex);
+                }
+               
                 if (_history[id].HasMatch(original))
                 {
-                    return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, _history[id].Replace(original, replacement)) };                    
+                    var text = _history[id].GetLine(original);                   
+                    
+                    return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, ReplaceText(text, original, replacement, global)) };                                             
                 }
                 
                 if (_generalHistory.HasMatch(original))
                 {
-                    return new List<string> { string.Format("{0} Thinks you meant: {1}", e.Source.Name, _generalHistory.Replace(original, replacement)) };                    
+                    var text = _generalHistory.GetLine(original);
+
+                    return new List<string> { string.Format("{0} Thinks you meant: {1}", e.Source.Name, ReplaceText(text, original, replacement, global)) };                                        
                 }
 
                 return null;
+            }else if (!_history.ContainsKey(id))
+            {
+                _history.Add(id, new LineHistory(5));
             }
             
             _generalHistory.AddLine(line);
@@ -75,6 +83,22 @@ namespace Plugin_Replace
         public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
         {
             return null;
+        }
+
+        public string ReplaceText(string line, string original, string replacement, bool global=false)
+        {
+            if (global)
+            {
+                return ReplaceGlobal(line, original, replacement);
+            }
+
+            var regex = new Regex(Regex.Escape(original));
+            return regex.Replace(line, replacement, 1).Trim();       
+        }
+
+        public string ReplaceGlobal(string line, string original, string replacement)
+        {
+            return line.Replace(original, replacement).Trim();   
         }
     }
 }
