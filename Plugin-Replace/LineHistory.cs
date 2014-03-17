@@ -35,7 +35,7 @@ namespace Plugin_Replace
 
         public string Replace(string original, string replacement)
         {
-            foreach (var line in _history)
+            foreach (var line in _history.Reverse())
             {
                 if (line.Contains(original))
                 {

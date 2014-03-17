@@ -37,7 +37,7 @@ namespace Plugin_Replace
 
             if (!_history.ContainsKey(id))
             {
-                _history.Add(id, new LineHistory(3));
+                _history.Add(id, new LineHistory(5));
             }
 
             if (Regex.IsMatch(line, expresion))
