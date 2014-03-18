@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Plugin_BurnLegend
 {
     class BurnLegendRound
     {
-        public List<Action> Actions;
+        public List<BurnLegendAction> Actions;
 
         public BurnLegendRound()
         {
-            Actions = new List<Action>();
+            Actions = new List<BurnLegendAction>();
         }
 
         public void AddAction(string userName, string actionDescription)
         {
-            Actions.Add(new Action{ActionDescription = actionDescription, UserName = userName});
+            Actions.Add(new BurnLegendAction{ActionDescription = actionDescription, UserName = userName});
         }
 
         public void ClearActionsBy(string userName)
@@ -35,6 +32,25 @@ namespace Plugin_BurnLegend
             }
 
             return revealedActions;
+        }
+
+        public string Status()
+        {
+            var statusline = "Status of round: ";
+
+            if (!Actions.Any())
+            {
+                return "No action yet in this round.";
+            }
+
+            var names = Actions.GroupBy(a => a.UserName);
+
+            foreach (var name in names)
+            {
+                statusline += string.Format("{0}[{1}] ", name.Key, name.Count());
+            }
+
+            return statusline;
         }
     }
 }

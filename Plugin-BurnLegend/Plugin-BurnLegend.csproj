@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
+    <Compile Include="BurnLegendAction.cs" />
     <Compile Include="BurnLegend.cs" />
     <Compile Include="BurnLegendRound.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

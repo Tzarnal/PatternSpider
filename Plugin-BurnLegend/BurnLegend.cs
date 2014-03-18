@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using IrcDotNet;
@@ -36,81 +35,102 @@ namespace Plugin_BurnLegend
             var subcommand = messageParts[1].ToLower();
             var nick = e.Source.Name;
 
-            if (subcommand == "help")
+            switch (subcommand)
             {
-                return new List<string> {"Please ask for help in a PM."};
-                
-            }
-            else if(subcommand == "start")
-            {
-                if (messageParts.Length < 3)
-                {
-                    return new List<string> { "Please provide a roundname" };
-                }
+                case "help":
+                    return new List<string> {"Please ask for help in a PM."};
+                case "start":
+                    {
+                        if (messageParts.Length < 3)
+                        {
+                            return new List<string> { "Please provide a roundname" };
+                        }
 
-                var roundName = messageParts[2];
-                if (_activeRounds.ContainsKey(roundName))
-                {
-                    return new List<string>{"A Round with that name is already active."};
-                }
-                else
-                {
-                    _activeRounds.Add(roundName, new BurnLegendRound());
-                    return new List<string> { "New round with the name " + roundName + " started." };
-                }
-            }else if (subcommand == "reveal")
-            {
+                        var roundName = messageParts[2];
+                        if (_activeRounds.ContainsKey(roundName))
+                        {
+                            return new List<string>{"A Round with that name is already active."};
+                        }
+                        else
+                        {
+                            _activeRounds.Add(roundName, new BurnLegendRound());
+                            return new List<string> { "New round with the name " + roundName + " started." };
+                        }
+                    }
+                case "reveal":
+                    {
 
-                if (messageParts.Length < 3)
-                {
-                    return new List<string> { "Please provide a roundname" };
-                }                
+                        if (messageParts.Length < 3)
+                        {
+                            return new List<string> { "Please provide a roundname" };
+                        }                
                 
-                var roundName = messageParts[2];
+                        var roundName = messageParts[2];
                 
-                if (!_activeRounds.ContainsKey(roundName))
-                {
-                    return new List<string>{"No round active by that name."};
-                }
+                        if (!_activeRounds.ContainsKey(roundName))
+                        {
+                            return new List<string>{"No round active by that name."};
+                        }
                 
-                var response = _activeRounds[roundName].Reveal();
-                _activeRounds.Remove(roundName);
-                return response;
-            }else if (subcommand == "action")
-            {                
-                if (messageParts.Length < 4)
-                {
-                    return new List<string> { "Usage: Burnlegend Action <roundname> <action description>" };
-                }
+                        var response = _activeRounds[roundName].Reveal();
+                        _activeRounds.Remove(roundName);
+                        return response;
+                    }
+                case "status":
+                    {
 
-                var roundName = messageParts[2];
+                        if (messageParts.Length < 3)
+                        {
+                            return new List<string> { "Please provide a roundname" };
+                        }
 
-                var actionDescription = string.Join(" ", messageParts.Skip(3));
-                
-                if (!_activeRounds.ContainsKey(roundName))
-                {
-                    return new List<string> { "No round active by that name." };
-                }
-                
-                _activeRounds[roundName].AddAction(e.Source.Name,actionDescription);
+                        var roundName = messageParts[2];
 
-                return new List<string> { "Action Added." };
-            }else if (subcommand == "clear")
-            {
-                if (messageParts.Length < 3)
-                {
-                    return new List<string> { "Please provide a roundname" };
-                }
+                        if (!_activeRounds.ContainsKey(roundName))
+                        {
+                            return new List<string> { "No round active by that name." };
+                        }
+
+                        var response = _activeRounds[roundName].Status();
+                        return new List<string> {response};
+                    }
+                case "action":
+                    {                
+                        if (messageParts.Length < 4)
+                        {
+                            return new List<string> { "Usage: Burnlegend BurnLegendAction <roundname> <action description>" };
+                        }
+
+                        var roundName = messageParts[2];
+
+                        var actionDescription = string.Join(" ", messageParts.Skip(3));
+                
+                        if (!_activeRounds.ContainsKey(roundName))
+                        {
+                            return new List<string> { "No round active by that name." };
+                        }
+                
+                        _activeRounds[roundName].AddAction(e.Source.Name,actionDescription);
+
+                        return new List<string> { "Action Added to Round." };
+                    }
+                case "clear":
+                    {
+                        if (messageParts.Length < 3)
+                        {
+                            return new List<string> { "Please provide a roundname" };
+                        }
              
-                var roundName = messageParts[2];
+                        var roundName = messageParts[2];
 
-                if (!_activeRounds.ContainsKey(roundName))
-                {
-                    return new List<string> { "No round active by that name." };
-                }
+                        if (!_activeRounds.ContainsKey(roundName))
+                        {
+                            return new List<string> { "No round active by that name." };
+                        }
 
-                _activeRounds[roundName].ClearActionsBy(e.Source.Name);
-                return new List<string> { "Cleared your entered actions in that round." };
+                        _activeRounds[roundName].ClearActionsBy(e.Source.Name);
+                        return new List<string> { "Cleared your entered actions in that round." };
+                    }
             }
 
             return null;
@@ -154,7 +174,7 @@ namespace Plugin_BurnLegend
             helptext.Add("BurnLegend Reveal <roundname>");
             helptext.Add("- Finishes an ongoing Round of Burn Legend and reveals the actions");
 
-            helptext.Add("Burnlegend Action <roundname> <action description>");
+            helptext.Add("Burnlegend BurnLegendAction <roundname> <action description>");
             helptext.Add("- How to PM this bot actions for a round in a channel");
 
             helptext.Add("Burnlegend Clear <roundname>");
