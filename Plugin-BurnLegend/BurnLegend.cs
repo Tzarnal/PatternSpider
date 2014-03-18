@@ -147,7 +147,8 @@ namespace Plugin_BurnLegend
 
             if (messageParts.Length >= 2)
             {
-                if (Commands.Contains(messageParts[0]))
+                var command = messageParts[0].Substring(1);
+                if (Commands.Contains(command) )
                 {
                     if (messageParts[1] == "help")
                     {
@@ -161,27 +162,22 @@ namespace Plugin_BurnLegend
 
         private List<string> HelpText()
         {
-            var helptext = new List<string>();
-
-            helptext.Add("Usage:");
-
-            helptext.Add("BurnLegend Help");
-            helptext.Add("- Show this Help Text");
-
-            helptext.Add("BurnLegend Start <roundname>");
-            helptext.Add("- Starts a Round of Burn legend with the provided round name");
-
-            helptext.Add("BurnLegend Reveal <roundname>");
-            helptext.Add("- Finishes an ongoing Round of Burn Legend and reveals the actions");
-
-            helptext.Add("Burnlegend Status <roundname>");
-            helptext.Add("Displays who have entered actions for this round and how many.");
-
-            helptext.Add("Burnlegend BurnLegendAction <roundname> <action description>");
-            helptext.Add("- How to PM this bot actions for a round in a channel");
-
-            helptext.Add("Burnlegend Clear <roundname>");
-            helptext.Add("Clears any actions you set up for that channel");
+            var helptext = new List<string>
+                {
+                    "Usage:",
+                    "BurnLegend Help",
+                    "- Show this Help Text",
+                    "BurnLegend Start <roundname>",
+                    "- Starts a Round of Burn legend with the provided round name",
+                    "BurnLegend Reveal <roundname>",
+                    "- Finishes an ongoing Round of Burn Legend and reveals the actions",
+                    "Burnlegend Status <roundname>",
+                    "- Displays who have entered actions for this round and how many.",
+                    "Burnlegend Action <roundname> <action description>",
+                    "- How to PM this bot actions for a round in a channel",
+                    "Burnlegend Clear <roundname>",
+                    "- Clears any actions you set up for that channel"
+                };
 
             return helptext;
         }
