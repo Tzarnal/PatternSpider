@@ -174,6 +174,9 @@ namespace Plugin_BurnLegend
             helptext.Add("BurnLegend Reveal <roundname>");
             helptext.Add("- Finishes an ongoing Round of Burn Legend and reveals the actions");
 
+            helptext.Add("Burnlegend Status <roundname>");
+            helptext.Add("Displays who have entered actions for this round and how many.");
+
             helptext.Add("Burnlegend BurnLegendAction <roundname> <action description>");
             helptext.Add("- How to PM this bot actions for a round in a channel");
 
