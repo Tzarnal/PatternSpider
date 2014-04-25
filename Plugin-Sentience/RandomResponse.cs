@@ -50,7 +50,7 @@ namespace Plugin_Sentience
                 "As I see it, yes.",
                 "Most likely.",
                 "Outlook good.",
-                "Signs point to yes",
+                "Signs point to yes.",
                 "Reply hazy, try again.",
                 "Ask again later.",
                 "Better not tell you now.",
