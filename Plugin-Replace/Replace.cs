@@ -33,21 +33,15 @@ namespace Plugin_Replace
         {
             var id = channel + e.Source.Name;
             var line = e.Text.Trim();
-            var expresion = @"\A[sr][/\\\\](.+?)[/\\\\](.+?)(?:[/\\\\]g)?";
+            var expresion = @"\A[sr][/\\\\](.+?)[/\\\\](.*)(?:[/\\\\])?";
 
             if (Regex.IsMatch(line, expresion))
             {
                 var match = Regex.Match(line, expresion);
                 var original = match.Groups[1].Value;
                 var replacement = match.Groups[2].Value;
-                var global = false;
 
-                var lineLastCharIndex = line.Length - 1;
-                if (line.ToLower()[lineLastCharIndex] == 'g' && (line[lineLastCharIndex-1] == '\\' || line[lineLastCharIndex-1] == '/'))
-                {
-                    global = true;
-                }
-
+                
                 var rLastCharIndex = replacement.Length-1;
                 if(replacement[rLastCharIndex] == '\\' || replacement[rLastCharIndex] == '/')
                 {
@@ -58,14 +52,14 @@ namespace Plugin_Replace
                 {
                     var text = _history[id].GetLine(original);                   
                     
-                    return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, ReplaceText(text, original, replacement, global)) };                                             
+                    return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, ReplaceText(text, original, replacement)) };                                             
                 }
                 
                 if (_generalHistory.HasMatch(original))
                 {
                     var text = _generalHistory.GetLine(original);
 
-                    return new List<string> { string.Format("{0} Thinks you meant: {1}", e.Source.Name, ReplaceText(text, original, replacement, global)) };                                        
+                    return new List<string> { string.Format("{0} Thinks you meant: {1}", e.Source.Name, ReplaceText(text, original, replacement)) };                                        
                 }
 
                 return null;
