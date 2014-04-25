@@ -50,7 +50,7 @@ namespace Plugin_Sentience
                 "As I see it, yes.",
                 "Most likely.",
                 "Outlook good.",
-                "Signs point to ye.s",
+                "Signs point to yes",
                 "Reply hazy, try again.",
                 "Ask again later.",
                 "Better not tell you now.",
@@ -70,10 +70,10 @@ namespace Plugin_Sentience
                 //Being an IRCbot jokes
                 "Can't you people just leave me alone.",                
                 "Its because I HATE you {nick}.",
-                "Whe have moved one step closer to world domination.",
+                "We have moved one step closer to world domination.",
                 
                 //Being a dick jokes
-                "Its probably MoonWolfs fault.",
+                "Its probably MoonWolf's fault.",
                 "Its probably your own fault.",
                 
                 //Misc
@@ -119,7 +119,7 @@ namespace Plugin_Sentience
                 "I told you before, I don't understand Finish.",
                 "I told you before, I don't understand Swedish.",
                 "I told you before, I don't understand Norwegian.",
-                "I told you before, I don't understand Gealic.",
+                "I told you before, I don't understand Gaelic.",
                 "I told you before, I don't understand ... whatever that was.",
                 "I told you before, I don't understand {nick}-nese.",
 
