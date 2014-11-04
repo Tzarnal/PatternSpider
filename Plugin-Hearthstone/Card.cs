@@ -13,6 +13,7 @@ namespace Plugin_Hearthstone
         public int cost { get; set; }
         public int attack { get; set; }
         public int health { get; set; }
+        public int durability { get; set; }
         public int faction { get; set; }
         public int elite { get; set; }
         public int collectible { get; set; }

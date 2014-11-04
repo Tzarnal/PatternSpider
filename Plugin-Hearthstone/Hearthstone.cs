@@ -68,7 +68,7 @@ namespace Plugin_Hearthstone
             if (cards.Count == 1)
             {
                 var card = cards[0];
-                return String.Format("[http://www.hearthhead.com/card={5}] {0} - {1}/{2} for {3} mana - {4}", card.name, card.attack, card.health, card.cost, card.description, card.id);
+                return CardToString(card);
             }
 
 
@@ -79,7 +79,38 @@ namespace Plugin_Hearthstone
         {
             return JsonConvert.DeserializeObject<List<Card>>(data);
         }
-        
+
+        private string CardToString(Card card)
+        {
+            var cardText = "";
+            
+            switch (card.type)
+            {
+                case 4:
+                    cardText = String.Format("[http://www.hearthhead.com/card={5}] Minion: {0} - {1}/{2} for {3} mana - {4}", 
+                                            card.name, card.attack, card.health, card.cost, card.description, card.id);
+                    break;
+                case 5:
+                    cardText = String.Format("[http://www.hearthhead.com/card={3}] Spell: {0} - {1} mana - {2}", 
+                                            card.name, card.cost, card.description, card.id);
+                    break;
+                case 7:
+                    cardText = string.Format("[http://www.hearthhead.com/card={4}] Weapon: {0} - {1}/{2} for {3} mana",
+                                             card.name, card.attack, card.durability, card.cost, card.id);
+                    if(!string.IsNullOrWhiteSpace(card.description))
+                    {
+                        cardText += " - " + card.description;
+                    }
+                    break;
+                default:
+                    cardText = String.Format("[http://www.hearthhead.com/card={3}] {0} - {1} mana - {2}",
+                                             card.name, card.cost, card.description, card.id);
+                    break;
+            }
+
+            return cardText;
+        }
+
         private string ExtractJsonStringFromPage(HtmlDocument document)
         {
             string flatDocument = document.DocumentNode.InnerHtml;
