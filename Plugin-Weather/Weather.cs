@@ -127,8 +127,8 @@ namespace Plugin_Weather
                 return new List<string> {"Error Occured trying to query for weather."};
             }
             
-            //try
-            //{
+            try
+            {
                 var siteLocation = CleanString(document.DocumentNode.SelectSingleNode("//div[@id='wob_loc']").InnerText);
                 var weatherDescription = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_dc']").InnerText);
                 var tempC = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_tm']").InnerText);
@@ -140,11 +140,11 @@ namespace Plugin_Weather
                 return new List<string> { String.Format("Weather for {6}: {1}°C ({0}°F) and {2}, {3} Humidity and {4} ({5}) Winds.",
                                                             tempC,tempF,weatherDescription,humidity,windkmh,windmph,siteLocation)};
 
-            /*}
+            }
             catch
             {
                 return new List<string> { "Could not find weather for " + location };
-            } */          
+            }
         }
 
         private List<string> WeatherForecast(string location)
@@ -172,11 +172,11 @@ namespace Plugin_Weather
                     var day = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']/div[@class='vk_lgy']").InnerText);
                     var desc = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//img").Attributes["alt"].Value);
 
-                    var tempDayC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/*[1]").InnerText);
-                    var tempDayF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/*[2]").InnerText);
+                    var tempDayC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/*[2]").InnerText);
+                    var tempDayF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_gy']/*[1]").InnerText);
 
-                    var tempNightC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/*[1]").InnerText);
-                    var tempNightF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/*[2]").InnerText);
+                    var tempNightC = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/*[2]").InnerText);
+                    var tempNightF = CleanString(document.DocumentNode.SelectSingleNode("//div[@wob_di='" + i + "']//div[@class='vk_lgy']/*[1]").InnerText);
 
                     response.Add(String.Format("{0}: {1} Day {2}°C ({3}°F), Night {4}°C ({5}°F)",
                         day, desc, tempDayC,tempDayF, tempNightC, tempNightF));
