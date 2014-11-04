@@ -87,7 +87,7 @@ namespace Plugin_Hearthstone
             switch (card.type)
             {
                 case 4:
-                    cardText = String.Format("[http://www.hearthhead.com/card={5}] Minion: {0} - {1}/{2} for {3} mana - {4}", 
+                    cardText = String.Format("[http://www.hearthhead.com/card={5}] Minion: {0} - {1}/{2} for {3} - {4}", 
                                             card.name, card.attack, card.health, card.cost, card.description, card.id);
                     break;
                 case 5:
@@ -95,8 +95,9 @@ namespace Plugin_Hearthstone
                                             card.name, card.cost, card.description, card.id);
                     break;
                 case 7:
-                    cardText = string.Format("[http://www.hearthhead.com/card={4}] Weapon: {0} - {1}/{2} for {3} mana",
+                    cardText = string.Format("[http://www.hearthhead.com/card={4}] Weapon: {0} - {1}/{2} for {3}",
                                              card.name, card.attack, card.durability, card.cost, card.id);
+                    
                     if(!string.IsNullOrWhiteSpace(card.description))
                     {
                         cardText += " - " + card.description;
