@@ -127,24 +127,24 @@ namespace Plugin_Weather
                 return new List<string> {"Error Occured trying to query for weather."};
             }
             
-            try
-            {
+            //try
+            //{
                 var siteLocation = CleanString(document.DocumentNode.SelectSingleNode("//div[@id='wob_loc']").InnerText);
                 var weatherDescription = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_dc']").InnerText);
                 var tempC = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_tm']").InnerText);
                 var tempF = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_ttm']").InnerText);
                 var humidity = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_hm']").InnerText);
-                var windkmh = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_ws']").InnerText);
-                var windmph = CleanString(document.DocumentNode.SelectSingleNode("//span[@id='wob_tws']").InnerText);
+                var windkmh = CleanString(document.DocumentNode.SelectSingleNode("//div[@id='wob_wg']//span[@class='wob_t'][1]").InnerText);
+                var windmph = CleanString(document.DocumentNode.SelectSingleNode("//div[@id='wob_wg']//span[@class='wob_t'][2]").InnerText);
 
                 return new List<string> { String.Format("Weather for {6}: {1}°C ({0}°F) and {2}, {3} Humidity and {4} ({5}) Winds.",
                                                             tempC,tempF,weatherDescription,humidity,windkmh,windmph,siteLocation)};
 
-            }
+            /*}
             catch
             {
                 return new List<string> { "Could not find weather for " + location };
-            }           
+            } */          
         }
 
         private List<string> WeatherForecast(string location)
