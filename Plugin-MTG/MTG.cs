@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using IrcDotNet;
@@ -28,9 +29,9 @@ namespace Plugin_MTG
             var messageParts = text.Split(' ');
             var searchString = string.Join(" ", messageParts.Skip(1));
 
-            
+            var searchResult = SearchMagicCards(searchString);
 
-            return new List<string> { "Card" };            
+            return new List<string> { searchResult };            
         }
 
         public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
@@ -41,6 +42,47 @@ namespace Plugin_MTG
         public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
         {
             return null;        
+        }
+
+        private string SearchMagicCards(string searchString)
+        {
+            HtmlDocument document;
+
+            try
+            {
+                document = UrlRequest(string.Format("http://magiccards.info/query?q={0}&v=card&s=cname", searchString));
+            }
+            catch
+            {
+                return "Error Occured trying to search for card.";
+            }
+
+            string resultCount;
+
+            try
+            {
+                resultCount = document.DocumentNode.SelectSingleNode("//body/table[3]/tr/td[3]").InnerHtml.Trim();
+
+            }
+            catch
+            {
+                return "No Results found for: " + searchString;
+            }
+
+            var matchString = @"([\d]+).cards";
+            var regex = new Regex(matchString, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+            if (regex.IsMatch(resultCount))
+            {
+                var count = regex.Match(resultCount).Groups[1];
+                return String.Format("[http://magiccards.info/query?q={1}&v=card&s=cname] Found {0} cards.", count, searchString);
+            }
+            else
+            {
+                var cardLink = document.DocumentNode.SelectSingleNode("//body/table[4]/tr/td[2]/span/a").Attributes["href"].Value;
+                return String.Format("[http://magiccards.info{0}]", cardLink);
+            }
+            
         }
 
         private HtmlDocument UrlRequest(string url)
