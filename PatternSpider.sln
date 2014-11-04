@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-BurnLegend", "Plugin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Hearthstone", "Plugin-Hearthstone\Plugin-Hearthstone.csproj", "{D12F982C-B83F-4B12-B7CE-BBDBB556EC8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-MTG", "Plugin-MTG\Plugin-MTG.csproj", "{47FE0B2F-9526-43AB-AA32-0B36D48314D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{D12F982C-B83F-4B12-B7CE-BBDBB556EC8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D12F982C-B83F-4B12-B7CE-BBDBB556EC8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D12F982C-B83F-4B12-B7CE-BBDBB556EC8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
