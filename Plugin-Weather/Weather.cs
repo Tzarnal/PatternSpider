@@ -69,7 +69,7 @@ namespace Plugin_Weather
             else if (messageParts.Count() == 2)
             {
                 var command = messageParts[1];                
-                if (command == "forecast")
+                if (command.ToLower() == "forecast")
                 {
                     if (_usersLocations.UserLocations.ContainsKey(user))
                     {
@@ -79,7 +79,7 @@ namespace Plugin_Weather
                     {
                         response = HelpText();
                     }
-                }else if (command == "remember")
+                }else if (command.ToLower() == "remember")
                 {
                     response = HelpText();
                 }
@@ -92,11 +92,11 @@ namespace Plugin_Weather
             {
                 var command = messageParts[1].ToLower();
 
-                if (command == "forecast")
+                if (command.ToLower() == "forecast")
                 {
-                    response = WeatherForecast(string.Join(" ", messageParts.Skip(1)));
+                    response = WeatherForecast(string.Join(" ", messageParts.Skip(2)));
                 }
-                else if (command == "remember")
+                else if (command.ToLower() == "remember")
                 {
                     response = Remember(e.Source.Name,string.Join(" ", messageParts.Skip(2)));
                 }
