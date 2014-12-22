@@ -4,26 +4,28 @@ using Newtonsoft.Json;
 
 namespace Plugin_Weather
 {
-    class UsersLocations
+    class ApiKeys
     {
         public static string DataPath = "Plugins/Weather/";
-        public static string DataFileName = "UserLocations.json";
+        public static string DataFileName = "APIKeys.json";
         public static string FullPath
         {
             get { return DataPath + DataFileName; }
 
         }
 
-        public Dictionary<string, string> UserLocations;
+        public string ForecastIoKey;
+        public string MapQuestKey;
 
-        public UsersLocations()
+        public ApiKeys ()
         {
-            UserLocations = new Dictionary<string, string>();
+            ForecastIoKey = "Dummy-Key-0123456";
+            MapQuestKey = "Dummy-Key-0123456";
         }
 
         public void Save()
-        {
-            var data = JsonConvert.SerializeObject(this, Formatting.Indented);
+        {            
+            var data = JsonConvert.SerializeObject(this,Formatting.Indented);
 
             if (!Directory.Exists(DataPath))
             {
@@ -33,10 +35,10 @@ namespace Plugin_Weather
             File.WriteAllText(FullPath, data);
         }
 
-        public static UsersLocations Load()
+        public static ApiKeys Load()
         {
             var data = File.ReadAllText(FullPath);
-            return JsonConvert.DeserializeObject<UsersLocations>(data);
+            return JsonConvert.DeserializeObject<ApiKeys>(data);
         }
     }
 }
