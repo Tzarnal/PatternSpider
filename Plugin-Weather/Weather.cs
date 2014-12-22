@@ -1,17 +1,10 @@
-﻿using System;
-using System.Data;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using ForecastIO;
 
 namespace Plugin_Weather
 {
@@ -124,16 +117,18 @@ namespace Plugin_Weather
             return null;
         }
 
-        private string CleanString(string input)
-        {
-            Regex whitespaceRegex = new Regex("\\s");
-            return whitespaceRegex.Replace(input, " ").Trim();
-        }
 
         private List<string> WeatherToday(string location)
         {
             
             var output = new List<string> {"No Weather"};
+
+            var coordinates = _lookup.Lookup(location);
+
+            //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
+
+
+
             return output;
         }
 
