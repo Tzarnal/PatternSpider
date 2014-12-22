@@ -7,8 +7,8 @@ namespace Plugin_Weather
 {
     struct Coordinates
     {
-        public double Latitude;
-        public double Longitude;       
+        public float Latitude;
+        public float Longitude;       
     }
     
     class GeoCodeLookup
@@ -35,8 +35,8 @@ namespace Plugin_Weather
             var qCoordinates = qLocation.First().Coordinates;
 
 
-            coordinates.Latitude = qCoordinates.Latitude;
-            coordinates.Longitude = qCoordinates.Longitude;
+            coordinates.Latitude = (float) qCoordinates.Latitude;
+            coordinates.Longitude = (float) qCoordinates.Longitude;
 
             _cache.Add(location,coordinates);
 

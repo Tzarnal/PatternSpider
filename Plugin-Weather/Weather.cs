@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using ForecastIO;
 using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -120,14 +122,37 @@ namespace Plugin_Weather
 
         private List<string> WeatherToday(string location)
         {
-            
-            var output = new List<string> {"No Weather"};
 
-            var coordinates = _lookup.Lookup(location);
+            List<string> output;
+            Coordinates coordinates;
+
+            try
+            {
+                coordinates = _lookup.Lookup(location);
+            }
+            catch
+            {                
+               return new List<string> {"Could not find " + location };
+            }
 
             //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
 
+            var weatherRequest = new ForecastIORequest(_apiKeys.ForecastIoKey,coordinates.Latitude, coordinates.Longitude, DateTime.Now, Unit.si);
+            ForecastIOResponse weather;
 
+            try
+            {
+                weather = weatherRequest.Get();
+            }
+            catch
+            {
+                return new List<string> { "Found " + location + " but could not find any weather there."};
+            }
+               
+            var wToday = weather.currently;
+
+            output = new List<string> { string.Format("Weather for {0}: {1} and {2}, {3}% Humidity and {4} Winds.", 
+                location, Temp(wToday.temperature), wToday.summary, wToday.humidity  * 100,  Windspeed(wToday.windSpeed) )};
 
             return output;
         }
@@ -136,6 +161,24 @@ namespace Plugin_Weather
         {
             var output = new List<string> {"No Forecast"};
             return output;
+        }
+
+        private string Windspeed(float windSpeedKm)
+        {
+            var windSpeedM = windSpeedKm * 0.62137;
+
+            return string.Format("{0} km/h ({1} mp/h",
+                Math.Round(windSpeedKm,MidpointRounding.AwayFromZero),
+                Math.Round(windSpeedM,MidpointRounding.AwayFromZero) );
+        }
+
+        private string Temp(float temperatureC)
+        {
+            var temperatureF = temperatureC * 9/5 + 32;
+
+            return string.Format("{0}°C ({1}°F)", 
+                Math.Round(temperatureC,MidpointRounding.AwayFromZero), 
+                Math.Round(temperatureF,MidpointRounding.AwayFromZero) );
         }
 
         private List<string> Remember(string user, string location)
