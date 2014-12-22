@@ -25,6 +25,7 @@ namespace Plugin_Weather
 
         private UsersLocations _usersLocations;
         private ApiKeys _apiKeys;
+        private GeoCodeLookup _lookup;
 
         public Weather()
         {
@@ -47,6 +48,8 @@ namespace Plugin_Weather
                 _apiKeys = new ApiKeys();
                 _apiKeys.Save();
             }
+
+            _lookup = new GeoCodeLookup(_apiKeys.MapQuestKey);
         }
 
         public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
@@ -129,6 +132,7 @@ namespace Plugin_Weather
 
         private List<string> WeatherToday(string location)
         {
+            
             var output = new List<string> {"No Weather"};
             return output;
         }
