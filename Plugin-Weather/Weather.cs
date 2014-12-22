@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using ForecastIO;
+using ForecastIO.Extensions;
 using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -159,7 +160,52 @@ namespace Plugin_Weather
 
         private List<string> WeatherForecast(string location)
         {
-            var output = new List<string> {"No Forecast"};
+            List<string> output = new List<string>();
+            Coordinates coordinates;
+
+            try
+            {
+                coordinates = _lookup.Lookup(location);
+            }
+            catch
+            {
+                return new List<string> { "Could not find " + location };
+            }
+
+            //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
+
+            var extendBlocks = new Extend[] 
+            {
+                Extend.hourly
+            };
+
+            var weatherRequest = new ForecastIORequest(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude, Unit.si, extendBlocks);
+            
+            ForecastIOResponse weather;
+
+            try
+            {
+                weather = weatherRequest.Get();
+            }
+            catch
+            {
+                return new List<string> { "Found " + location + " but could not find any weather there." };
+            }
+
+            output.Add("3 day forecast for: " + location);
+
+
+            var dailyWeather = weather.daily.data.Skip(2).Take(3);
+
+            foreach (var dayWeather in dailyWeather)
+            {
+                output.Add(string.Format("{0}: {1} {2} to {3}",
+                                         dayWeather.time.ToDateTime().DayOfWeek,
+                                         dayWeather.summary,
+                                         Temp(dayWeather.temperatureMin),
+                                         Temp(dayWeather.temperatureMax) ));
+            }
+                     
             return output;
         }
 
