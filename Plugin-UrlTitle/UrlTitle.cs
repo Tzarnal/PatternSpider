@@ -6,9 +6,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using HtmlAgilityPack;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 
@@ -23,16 +21,16 @@ namespace Plugin_UrlTitle
         public List<string> Commands {
             get { return new List<string>(); }
         }
-        
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             var MatchUrlRegex = @"(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'"".,<>?«»“”‘’]))";
-            var results = Regex.Matches(e.Text, MatchUrlRegex);
+            var results = Regex.Matches(m.Text, MatchUrlRegex);
 
             foreach (var result in results)
             {
@@ -43,7 +41,7 @@ namespace Plugin_UrlTitle
             return null;
         }
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }
@@ -71,7 +69,7 @@ namespace Plugin_UrlTitle
 
                 if (message != null)
                 {
-                    ircBot.SendChannelMessage(channel, message);
+                    ircBot.SendChannelMessage(channel, message);                    
                 }
 
             }catch(Exception e)

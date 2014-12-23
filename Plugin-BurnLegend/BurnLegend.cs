@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 
@@ -23,9 +22,9 @@ namespace Plugin_BurnLegend
         }
 
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var messageParts = e.Text.Split(' ');
+            var messageParts = m.Text.Split(' ');
 
             if (messageParts.Length < 2)
             {
@@ -33,7 +32,7 @@ namespace Plugin_BurnLegend
             }
 
             var subcommand = messageParts[1].ToLower();
-            var nick = e.Source.Name;
+            var nick = m.Sender;
 
             switch (subcommand)
             {
@@ -110,7 +109,7 @@ namespace Plugin_BurnLegend
                             return new List<string> { "No round active by that name." };
                         }
                 
-                        _activeRounds[roundName].AddAction(e.Source.Name,actionDescription);
+                        _activeRounds[roundName].AddAction(m.Sender,actionDescription);
 
                         return new List<string> { "Action Added to Round." };
                     }
@@ -128,7 +127,7 @@ namespace Plugin_BurnLegend
                             return new List<string> { "No round active by that name." };
                         }
 
-                        _activeRounds[roundName].ClearActionsBy(e.Source.Name);
+                        _activeRounds[roundName].ClearActionsBy(m.Sender);
                         return new List<string> { "Cleared your entered actions in that round." };
                     }
             }
@@ -136,14 +135,14 @@ namespace Plugin_BurnLegend
             return null;
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {                       
-            var messageParts = e.Text.ToLower().Split(' ');
+            var messageParts = m.Text.ToLower().Split(' ');
 
             if (messageParts.Length >= 2)
             {

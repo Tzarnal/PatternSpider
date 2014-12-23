@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using PatternSpider.Utility;
@@ -21,10 +20,10 @@ namespace Plugin_Fudge
             _genie = new DiceRoller();
         }
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var message = e.Text;
-            var name = e.Source.Name;
+            var message = m.Text;
+            var name = m.Sender;
             var messageParts = message.Split(' ');
             var diceNumber = 4;
 
@@ -60,12 +59,12 @@ namespace Plugin_Fudge
             return new List<string> { name + " -- [" + string.Join(" ", results) + "] -- Sum: " + rollTotal };
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

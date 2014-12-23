@@ -8,7 +8,6 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 
@@ -21,10 +20,10 @@ namespace Plugin_MTG
         public string Description { get { return "Gives a link to a MTG card when invoked."; } }
 
         public List<string> Commands { get { return new List<string> { "mtg" }; } }
-        
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var text = e.Text.Trim();
+            var text = m.Text.Trim();
             var messageParts = text.Split(' ');
             var searchString = string.Join(" ", messageParts.Skip(1));
 
@@ -33,12 +32,12 @@ namespace Plugin_MTG
             return new List<string> { searchResult };            
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;        
         }

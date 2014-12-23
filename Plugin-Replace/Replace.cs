@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text.RegularExpressions;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 
@@ -24,15 +23,15 @@ namespace Plugin_Replace
             _generalHistory = new LineHistory(10);
         }
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
-            var id = channel + e.Source.Name;
-            var line = e.Text.Trim();
+            var id = channel + m.Sender;
+            var line = m.Text.Trim();
             var expresion = @"\A[sr][/\\\\](.+?)[/\\\\](.*)(?:[/\\\\])?";
 
             if (Regex.IsMatch(line, expresion))
@@ -52,14 +51,14 @@ namespace Plugin_Replace
                 {
                     var text = _history[id].GetLine(original);                   
                     
-                    return new List<string> { string.Format("{0} Meant: {1}", e.Source.Name, ReplaceText(text, original, replacement)) };                                             
+                    return new List<string> { string.Format("{0} Meant: {1}", m.Sender, ReplaceText(text, original, replacement)) };                                             
                 }
                 
                 if (_generalHistory.HasMatch(original))
                 {
                     var text = _generalHistory.GetLine(original);
 
-                    return new List<string> { string.Format("{0} Thinks you meant: {1}", e.Source.Name, ReplaceText(text, original, replacement)) };                                        
+                    return new List<string> { string.Format("{0} Thinks you meant: {1}", m.Sender, ReplaceText(text, original, replacement)) };                                        
                 }
 
                 return null;
@@ -74,7 +73,7 @@ namespace Plugin_Replace
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

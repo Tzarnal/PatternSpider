@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using PatternSpider.Utility;
@@ -22,11 +21,11 @@ namespace Plugin_Dice
         private string _diceResults;
         private DiceRoller _genie = new DiceRoller();
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var messageParts = e.Text.Split(' ');
+            var messageParts = m.Text.Split(' ');
             var processedMessage = string.Join(" ", messageParts.Skip(1));
-            var name = e.Source.Name;                     
+            var name = m.Sender;                     
             var response = new List<string>();
 
             switch (messageParts[0].Substring(1))
@@ -96,12 +95,12 @@ namespace Plugin_Dice
             
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

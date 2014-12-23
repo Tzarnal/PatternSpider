@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.Composition;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using PatternSpider.Utility;
@@ -19,10 +18,10 @@ namespace Plugin_Exalted
 
         private DiceRoller _fate = new DiceRoller();
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
             var response = new List<string>();
-            var mesasge = e.Text;
+            var mesasge = m.Text;
             var messageParts = mesasge.Split(' ');
 
             if (messageParts.Length < 2)
@@ -41,7 +40,7 @@ namespace Plugin_Exalted
                     }
                     else
                     {
-                        response.Add(string.Format("<{0}> {1}", e.Source.Name, RollPool(poolSize)));
+                        response.Add(string.Format("<{0}> {1}", m.Sender, RollPool(poolSize)));
                     }
                 }
             }
@@ -79,12 +78,12 @@ namespace Plugin_Exalted
             return response;
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

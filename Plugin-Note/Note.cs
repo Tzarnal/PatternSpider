@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using Plugin_Note.Extensions;
@@ -33,9 +32,9 @@ namespace Plugin_Note
             }
         }
 
-        public List<string> IrcCommand(IrcBot ircBot, string serverName, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string serverName, IrcMessage m)
         {
-            var messageParts = e.Text.Split(' ');
+            var messageParts = m.Text.Split(' ');
             var message = string.Join(" ", messageParts.Skip(2));
 
             if (messageParts.Length < 3)
@@ -52,7 +51,7 @@ namespace Plugin_Note
                 {
                     Recipient = messageParts[1],
                     Message = message,
-                    Sender = e.Source.Name,
+                    Sender = m.Sender,
                     Time = DateTime.Now
                 };
 
@@ -62,13 +61,13 @@ namespace Plugin_Note
             return new List<string> { String.Format("Your note to {0} has been added.", messageParts[1]) };           
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string serverName, string channelName, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string serverName, string channelName, IrcMessage m)
         {
             var responses = new List<string>();
 
             if (_notes.NotesByServer.ContainsKey(serverName))
             {
-                var user = e.Source.Name.ToLower();
+                var user = m.Sender.ToLower();
                 var userNotes = _notes.NotesByServer[serverName].Where(note => note.Recipient.ToLower() == user).ToList();
                 
                 foreach (var noteEntry in userNotes)
@@ -85,7 +84,7 @@ namespace Plugin_Note
             return responses;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string serverName, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string serverName, IrcMessage m)
         {
             return null;
         }

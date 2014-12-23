@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 
@@ -20,9 +19,9 @@ namespace Plugin_Math
         public List<string> Commands { get { return new List<string> { "math","m","calculate","calc" }; } }
 
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var messageParts = e.Text.Split(' ');
+            var messageParts = m.Text.Split(' ');
             var message = string.Join(" ", messageParts.Skip(1));
 
             try
@@ -36,12 +35,12 @@ namespace Plugin_Math
             
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

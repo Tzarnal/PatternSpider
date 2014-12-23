@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 
@@ -14,18 +13,18 @@ namespace Plugin_Ping
 
         public List<string> Commands { get { return new List<string> { "ping" }; } }
 
-        
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
-        {
-            return new List<string>{"Pong."};
+
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
+        {            
+            return new List<string>{"Pong"};
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

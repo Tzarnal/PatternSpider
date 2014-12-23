@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using PatternSpider.Utility;
@@ -15,12 +14,12 @@ namespace Plugin_Nwod
 
         public List<string> Commands { get { return new List<string> { "nwod" }; } }
 
-        private int _successes; 
+        private int _successes;
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var message = e.Text;
-            var name = e.Source.Name;
+            var message = m.Text;
+            var name = m.Sender;
             var messageParts = message.Split(' ');
             string response;
 
@@ -78,12 +77,12 @@ namespace Plugin_Nwod
 
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

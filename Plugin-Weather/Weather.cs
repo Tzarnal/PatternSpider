@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using ForecastIO;
 using ForecastIO.Extensions;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using System.Collections.Generic;
@@ -48,12 +47,12 @@ namespace Plugin_Weather
             _lookup = new GeoCodeLookup(_apiKeys.MapQuestKey);
         }
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
-            var text = e.Text.Trim();
+            var text = m.Text.Trim();
             var messageParts = text.Split(' ');
             List<string> response;
-            var user = e.Source.Name;
+            var user = m.Sender;
 
             if (messageParts.Count() == 1)
             {
@@ -99,7 +98,7 @@ namespace Plugin_Weather
                 }
                 else if (command.ToLower() == "remember")
                 {
-                    response = Remember(e.Source.Name,string.Join(" ", messageParts.Skip(2)));
+                    response = Remember(m.Sender,string.Join(" ", messageParts.Skip(2)));
                 }
                 else
                 {
@@ -110,12 +109,12 @@ namespace Plugin_Weather
             return response;
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }

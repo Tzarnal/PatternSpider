@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Text.RegularExpressions;
-using IrcDotNet;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using RelayChains;
@@ -35,15 +34,15 @@ namespace Plugin_Sentience
             LoadBrains();
         }
 
-        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }
 
-        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessageEventArgs e)
+        public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
             var key = server + channel;
-            var message = e.Text;
+            var message = m.Text;
             var botName = ircBot.Nickname;
             var botNameMatch = string.Format("^{0}[:,;]", botName);
 
@@ -66,7 +65,7 @@ namespace Plugin_Sentience
                     return new List<string> { response };    
                 }
 
-                response = RandomResponse.Reponse(e.Source.Name);
+                response = RandomResponse.Reponse(m.Sender);
                 return new List<string> { response  };                                    
             }
             
@@ -148,7 +147,7 @@ namespace Plugin_Sentience
             }
         }
 
-        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessageEventArgs e)
+        public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
             return null;
         }
