@@ -87,16 +87,16 @@ namespace Plugin_Hearthstone
             switch (card.type)
             {
                 case 4:
-                    cardText = String.Format("[http://www.hearthhead.com/card={5}] Minion: {0} - {1}/{2} for {3} - {4}", 
-                                            card.name, card.attack, card.health, card.cost, card.description, card.id);
+                    cardText = String.Format("[http://www.hearthhead.com/card={5}] {6} Minion: {0} - {1}/{2} for {3} - {4}", 
+                                            card.name, card.attack, card.health, card.cost, card.description, card.id, Tables.Classes[card.cardClass]);
                     break;
                 case 5:
-                    cardText = String.Format("[http://www.hearthhead.com/card={3}] Spell: {0} - {1} mana - {2}", 
-                                            card.name, card.cost, card.description, card.id);
+                    cardText = String.Format("[http://www.hearthhead.com/card={3}] {4} Spell: {0} - {1} mana - {2}",
+                                            card.name, card.cost, card.description, card.id, Tables.Classes[card.cardClass]);
                     break;
                 case 7:
-                    cardText = string.Format("[http://www.hearthhead.com/card={4}] Weapon: {0} - {1}/{2} for {3}",
-                                             card.name, card.attack, card.durability, card.cost, card.id);
+                    cardText = string.Format("[http://www.hearthhead.com/card={4}] {5} Weapon: {0} - {1}/{2} for {3}",
+                                             card.name, card.attack, card.durability, card.cost, card.id, Tables.Classes[card.cardClass]);
                     
                     if(!string.IsNullOrWhiteSpace(card.description))
                     {

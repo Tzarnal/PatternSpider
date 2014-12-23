@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Plugin_Hearthstone
 {
@@ -11,6 +12,10 @@ namespace Plugin_Hearthstone
         public string icon { get; set; }
         public int type { get; set; }
         public int cost { get; set; }
+
+        [JsonProperty(PropertyName = "classs")]
+        public int cardClass { get; set; }
+        
         public int attack { get; set; }
         public int health { get; set; }
         public int durability { get; set; }
