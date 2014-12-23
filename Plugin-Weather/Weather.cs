@@ -213,7 +213,7 @@ namespace Plugin_Weather
         {
             var windSpeedM = windSpeedKm * 0.62137;
 
-            return string.Format("{0} km/h ({1} mp/h",
+            return string.Format("{0} km/h ({1} mp/h)",
                 Math.Round(windSpeedKm,MidpointRounding.AwayFromZero),
                 Math.Round(windSpeedM,MidpointRounding.AwayFromZero) );
         }
