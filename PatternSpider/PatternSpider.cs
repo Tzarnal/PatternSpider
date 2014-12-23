@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using IrcDotNet;
 using PatternSpider.Config;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -51,18 +50,11 @@ namespace PatternSpider
         private void Connect(ServerConfig serverConfig)
         {
             var connection = new IrcBot();
-            var regInfo = new IrcUserRegistrationInfo
-                {
-                    NickName = serverConfig.NickName,
-                    RealName = serverConfig.RealName,
-                    UserModes = new List<char> {'i'},
-                    UserName = serverConfig.NickName
-                };
 
-            connection.OnChannelMessage += ChannelMessage;
-            connection.OnUserMessage += UserMessage;
+            //connection.OnChannelMessage += ChannelMessage;
+            //connection.OnUserMessage += UserMessage;
 
-            connection.Connect(serverConfig.Address,regInfo);
+            connection.Connect(serverConfig.Address);
             connection.Join(serverConfig.Channels);
 
             _connections.Add(connection, serverConfig);
@@ -83,21 +75,13 @@ namespace PatternSpider
 
         private void SendReply(string reply, IrcBot server,string user, object source)
         {
-            var channel = source as IrcChannel;
-            if (channel != null)
-            {
-                server.SendMessage(channel, reply);
-            }
-            else
-            {
-                server.SendQuery(user, reply);
-            }
+
             
         }
        
-        private void ChannelMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
+        private void ChannelMessage(object source, IrcBot ircBot)
         {                      
-            var eventArgs = e;            
+            /*var eventArgs = e;            
             
             if(string.IsNullOrWhiteSpace(eventArgs.Text) )
             {
@@ -131,12 +115,12 @@ namespace PatternSpider
                         SendReplies(plugin.IrcCommand(ircBot, servername, ircMessage), ircBot, eventArgs.Source.Name, source);
                     }
                 }
-            }           
+            }    */       
         }
 
-        private void UserMessage(object source, IrcBot ircBot, IrcMessageEventArgs e)
+        private void UserMessage(object source, IrcBot ircBot)
         {
-            var eventArgs = e;
+            /*var eventArgs = e;
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
             var firstWord = eventArgs.Text.Trim().Split(' ')[0].ToLower();
@@ -162,7 +146,7 @@ namespace PatternSpider
                         SendReplies(plugin.IrcCommand(ircBot, servername, ircMessage), ircBot, eventArgs.Source.Name, source);
                     }
                 }
-            }           
+            }       */    
         }
 
         private void LoadConfiguration()

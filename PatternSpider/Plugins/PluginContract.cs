@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using IrcDotNet;
 using PatternSpider.Irc;
 
 namespace PatternSpider.Plugins
