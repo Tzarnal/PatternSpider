@@ -69,7 +69,7 @@ namespace Plugin_UrlTitle
 
                 if (message != null)
                 {
-                    ircBot.SendChannelMessage(channel, message);                    
+                    ircBot.SendMessage(channel, message);                    
                 }
 
             }catch(Exception e)
