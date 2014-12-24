@@ -49,10 +49,18 @@ namespace PatternSpider
 
         private void Connect(ServerConfig serverConfig)
         {
-            var connection = new IrcBot();
+            var ircUser = new IrcUser
+                {
+                    Nickname = serverConfig.NickName,
+                    Username = serverConfig.NickName,
+                    Realname = serverConfig.RealName,
+                    NickServPassword = serverConfig.NickservPassword
+                };
 
-            //connection.OnChannelMessage += ChannelMessage;
-            //connection.OnUserMessage += UserMessage;
+            var connection = new IrcBot(ircUser);
+
+            connection.OnChannelMessage += ChannelMessage;
+            connection.OnUserMessage += UserMessage;
 
             connection.Connect(serverConfig.Address);
             connection.Join(serverConfig.Channels);
@@ -75,26 +83,22 @@ namespace PatternSpider
 
         private void SendReply(string reply, IrcBot server,string user, object source)
         {
-
+            server.SendMessage(user, reply);
             
         }
-       
-        private void ChannelMessage(object source, IrcBot ircBot)
-        {                      
-            /*var eventArgs = e;            
-            
-            if(string.IsNullOrWhiteSpace(eventArgs.Text) )
+
+        private void ChannelMessage(object source, IrcBot ircBot, IrcMessage m)
+        {                                          
+            if(string.IsNullOrWhiteSpace(m.Text) )
             {
                 return;
             }
 
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = eventArgs.Text.Trim().Split(' ')[0].ToLower();
-            var channelName = ((IrcChannel) source).Name;
-
-            var ircMessage = new IrcMessage { Text = e.Text, Sender = e.Source.Name, Channel = channelName, Server = servername };
-
+            var firstWord = m.TextArray[0].ToLower();
+            var channelName = m.Channel;
+            
             if(serverConfig.ActivePlugins == null)
             {
                 return;
@@ -105,28 +109,27 @@ namespace PatternSpider
             foreach (var plugin in relevantPlugins)
             {
 
-                SendReplies(plugin.OnChannelMessage(ircBot, servername, channelName, ircMessage), ircBot, eventArgs.Source.Name, source);
+                SendReplies(plugin.OnChannelMessage(ircBot, servername, channelName, m), ircBot, m.Channel, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
                     var command = firstWord.Substring(1);
                     if (plugin.Commands.Contains(command))
                     {
-                        SendReplies(plugin.IrcCommand(ircBot, servername, ircMessage), ircBot, eventArgs.Source.Name, source);
+                        SendReplies(plugin.IrcCommand(ircBot, servername, m), ircBot, m.Channel, source);
                     }
                 }
-            }    */       
+            }          
         }
 
-        private void UserMessage(object source, IrcBot ircBot)
+        private void UserMessage(object source, IrcBot ircBot, IrcMessage m)
         {
-            /*var eventArgs = e;
+            
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
-            var firstWord = eventArgs.Text.Trim().Split(' ')[0].ToLower();
+            var firstWord = m.TextArray[0].ToLower();
 
-            var ircMessage = new IrcMessage {Text = e.Text, Sender = e.Source.Name, Server = servername};
-
+ 
             if (serverConfig.ActivePlugins == null)
             {
                 return;
@@ -136,17 +139,17 @@ namespace PatternSpider
 
             foreach (var plugin in relevantPlugins)
             {
-                SendReplies(plugin.OnUserMessage(ircBot, servername, ircMessage), ircBot, eventArgs.Source.Name, source);
+                SendReplies(plugin.OnUserMessage(ircBot, servername, m), ircBot, m.Sender, source);
 
                 if (firstWord[0].ToString(CultureInfo.InvariantCulture) == _configuration.CommandSymbol)
                 {
                     var command = firstWord.Substring(1);
                     if (plugin.Commands.Contains(command))
                     {
-                        SendReplies(plugin.IrcCommand(ircBot, servername, ircMessage), ircBot, eventArgs.Source.Name, source);
+                        SendReplies(plugin.IrcCommand(ircBot, servername, m), ircBot, m.Sender, source);
                     }
                 }
-            }       */    
+            }        
         }
 
         private void LoadConfiguration()

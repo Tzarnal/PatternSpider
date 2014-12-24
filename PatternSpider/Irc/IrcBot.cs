@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using PatternSpider.Utility;
+using Meebey.SmartIrc4net;
 
 namespace PatternSpider.Irc
 {
@@ -11,6 +12,8 @@ namespace PatternSpider.Irc
         private bool _isRunning; // True if the read loop is currently active, false if ready to terminate.        
         private bool _isDisposed;
 
+        private IrcClient _ircClient;
+        private IrcUser _ircUser;
         private string _server;
         private List<string> _channelsToJoin;
 
@@ -25,11 +28,11 @@ namespace PatternSpider.Irc
 
         public string Nickname { get { throw new NotImplementedException(); } }
 
-        public IrcBot()
+        public IrcBot(IrcUser ircUser)
         {
             _isRunning = false;
             _channelsToJoin = new List<string>();
-        
+            _ircUser = ircUser;
         }
 
         ~IrcBot()
@@ -49,7 +52,10 @@ namespace PatternSpider.Irc
             {
                 if (disposing)
                 {
-
+                    if (_ircClient != null)
+                    {
+                        Disconnect();
+                    }
                 }
             }
             _isDisposed = true;
@@ -59,6 +65,8 @@ namespace PatternSpider.Irc
         {
             var newThread = new Thread(ThreadRun);
             newThread.Start();
+            
+            _ircClient.Listen();
         }
 
         private void ThreadRun()
@@ -66,7 +74,7 @@ namespace PatternSpider.Irc
             _isRunning = true;
             while (_isRunning)
             {                                
-
+                Console.Write(".");
                 Thread.Sleep(5000);
             }
 
@@ -81,25 +89,64 @@ namespace PatternSpider.Irc
         public void Connect(string server)
         {
             // Create new IRC client and connect to given server.
-            
+            var ircClient = new IrcClient {AutoReconnect = true};
 
-            // Wait until connection has succeeded or timed out.
+            ircClient.OnChannelMessage += IrcClientOnOnChannelMessage;
+            ircClient.OnQueryMessage += IrcClientOnOnQueryMessage;
+
+            try
+            {
+                ircClient.Connect(server, 6669);
+            }
+            catch
+            {
+                Console.WriteLine("Error: Could not connect to {0}.\n", server);
+                return;
+            }
+
+            try
+            {
+                //Log in
+                if (!string.IsNullOrEmpty(_ircUser.NickServPassword))
+                {
+                    ircClient.Login(_ircUser.Nickname, _ircUser.Realname,4,_ircUser.Username,_ircUser.NickServPassword);
+                }
+                else
+                {
+                    ircClient.Login(_ircUser.Nickname, _ircUser.Realname);    
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Error: Could not Login to {0} with {1}.\n", server, _ircUser.Nickname);
+                return;
+            }
             
-           
+                                    
+            //Finish up
+            
+            _server = server;
+            _ircClient = ircClient;
+
+
         }
+
+
 
         public void Disconnect()
         {
             // Disconnect IRC client that is connected to given server.
-           
+           _ircClient.Disconnect();
+
             // Remove client from connection.
+            _ircClient = null;
         }
 
         public void SendMessage(string target, string message) //Sends a message to either a channel or user 
         {
             try
             {
-                
+                _ircClient.SendMessage(SendType.Message, target, message);
             }
             catch (Exception e)
             {
@@ -112,7 +159,7 @@ namespace PatternSpider.Irc
         {
             try
             {
-
+                _ircClient.SendMessage(SendType.Message, user, message);
             }
             catch (Exception e)
             {
@@ -127,28 +174,67 @@ namespace PatternSpider.Irc
         }
 
         public void Join(List<string> channels)
-        {
-           
+        {            
+            _ircClient.RfcJoin(channels.ToArray());
         }
 
         public void Part(string channel)
         {
-           
+           Part(new List<string>{channel});
         }
 
         public void Part(List<string> channels)
         {
-            
+            _ircClient.RfcPart(channels.ToArray());
         }
+
+
+        #region Event Handlers
+
+        private void IrcClientOnOnChannelMessage(object sender, IrcEventArgs ircEventArgs)
+        {
+            var m = new IrcMessage
+                {
+                    Channel = ircEventArgs.Data.Channel,
+                    Sender = ircEventArgs.Data.Nick,
+                    Server = _server,
+                    Text = ircEventArgs.Data.Message,
+                    TextArray = ircEventArgs.Data.MessageArray
+                };
+            
+            if (OnChannelMessage != null)
+            {
+                ThreadStart threadStart = () => OnChannelMessage(sender, this, m);
+                new Thread(threadStart).Start();
+            } 
+        }
+
+        private void IrcClientOnOnQueryMessage(object sender, IrcEventArgs ircEventArgs)
+        {
+            var m = new IrcMessage
+            {
+                Sender = ircEventArgs.Data.Nick,
+                Server = _server,
+                Text = ircEventArgs.Data.Message,
+                TextArray = ircEventArgs.Data.MessageArray
+            };
+
+            if (OnChannelMessage != null)
+            {
+                ThreadStart threadStart = () => OnUserMessage(sender, this, m);
+                new Thread(threadStart).Start();
+            } 
+        }
+
+        #endregion
 
         #region Exposed Event
 
-        public delegate void ChannelMessage();
+        public delegate void ChannelMessage(object source, IrcBot ircBot, IrcMessage e);
         public event ChannelMessage OnChannelMessage;
 
-        public delegate void UserMessage();
+        public delegate void UserMessage(object source, IrcBot ircBot, IrcMessage e);
         public event UserMessage OnUserMessage;
-
 
         #endregion         
     }    
