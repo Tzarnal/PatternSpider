@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using PatternSpider.Utility;
 using Meebey.SmartIrc4net;
 
 namespace PatternSpider.Irc
@@ -15,23 +13,27 @@ namespace PatternSpider.Irc
         private IrcClient _ircClient;
         private IrcUser _ircUser;
         private string _server;
-        private List<string> _channelsToJoin;
-
-      
+              
         public string QuitMessage { get; set; }
         public string Server { get { return _server; }}
         
         public List<String> Channels 
         { 
-            get { throw new NotImplementedException(); }
+            get { 
+                var channels = new List<string>();
+                foreach (var channel in _ircClient.JoinedChannels)
+                {
+                    channels.Add(channel);
+                }
+                return channels;
+           }
         }
 
-        public string Nickname { get { throw new NotImplementedException(); } }
+        public string Nickname { get { return _ircClient.Nickname; }}
 
         public IrcBot(IrcUser ircUser)
         {
-            _isRunning = false;
-            _channelsToJoin = new List<string>();
+            _isRunning = false;            
             _ircUser = ircUser;
         }
 
@@ -65,17 +67,20 @@ namespace PatternSpider.Irc
         {
             var newThread = new Thread(ThreadRun);
             newThread.Start();
-            
-            _ircClient.Listen();
         }
 
         private void ThreadRun()
         {
             _isRunning = true;
             while (_isRunning)
-            {                                
-                Console.Write(".");
-                Thread.Sleep(5000);
+            {
+                _ircClient.ListenOnce();
+
+                //Recconnect in case _ircClient has been removed but we don't want to terminate
+                if (_ircClient == null)
+                {
+                    Connect(_server);
+                }
             }
 
             Dispose();
@@ -89,14 +94,17 @@ namespace PatternSpider.Irc
         public void Connect(string server)
         {
             // Create new IRC client and connect to given server.
-            var ircClient = new IrcClient {AutoReconnect = true};
+            var ircClient = new IrcClient {AutoReconnect = true, AutoNickHandling = true, AutoRelogin = true, AutoRetry = true};
 
             ircClient.OnChannelMessage += IrcClientOnOnChannelMessage;
             ircClient.OnQueryMessage += IrcClientOnOnQueryMessage;
+            ircClient.OnConnected += IrcClientOnOnConnected;
+            ircClient.OnDisconnected += IrcClientOnOnDisconnected;
 
             try
             {
-                ircClient.Connect(server, 6669);
+                _server = server;
+                ircClient.Connect(server, 6669);                
             }
             catch
             {
@@ -123,14 +131,9 @@ namespace PatternSpider.Irc
             }
             
                                     
-            //Finish up
-            
-            _server = server;
+            //Finish up                        
             _ircClient = ircClient;
-
-
         }
-
 
 
         public void Disconnect()
@@ -224,6 +227,17 @@ namespace PatternSpider.Irc
                 ThreadStart threadStart = () => OnUserMessage(sender, this, m);
                 new Thread(threadStart).Start();
             } 
+        }
+
+        private void IrcClientOnOnConnected(object sender, EventArgs eventArgs)
+        {
+            Console.WriteLine("Connected to {0}", _server);
+        }
+
+
+        private void IrcClientOnOnDisconnected(object sender, EventArgs eventArgs)
+        {
+            Console.WriteLine("Disconnected from {0}", _server);
         }
 
         #endregion
