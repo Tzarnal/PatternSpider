@@ -93,7 +93,7 @@ namespace PatternSpider
             {
                 return;
             }
-
+           
             var serverConfig = _connections[ircBot];
             var servername = serverConfig.Address;
             var firstWord = m.TextArray[0].ToLower();

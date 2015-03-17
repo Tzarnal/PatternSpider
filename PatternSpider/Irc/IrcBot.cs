@@ -196,13 +196,17 @@ namespace PatternSpider.Irc
 
         private void IrcClientOnOnChannelMessage(object sender, IrcEventArgs ircEventArgs)
         {
+            //Irc4net does not trim whitespace so we do that manually and then build a new array from that
+            var text = ircEventArgs.Data.Message.Trim();
+            var textArray = text.Split(' ');
+            
             var m = new IrcMessage
                 {
                     Channel = ircEventArgs.Data.Channel,
                     Sender = ircEventArgs.Data.Nick,
                     Server = _server,
-                    Text = ircEventArgs.Data.Message,
-                    TextArray = ircEventArgs.Data.MessageArray
+                    Text = text,
+                    TextArray = textArray
                 };
             
             if (OnChannelMessage != null)
@@ -214,12 +218,16 @@ namespace PatternSpider.Irc
 
         private void IrcClientOnOnQueryMessage(object sender, IrcEventArgs ircEventArgs)
         {
+            //Irc4net does not trim whitespace so we do that manually and then build a new array from that
+            var text = ircEventArgs.Data.Message.Trim();
+            var textArray = text.Split(' ');
+
             var m = new IrcMessage
             {
                 Sender = ircEventArgs.Data.Nick,
                 Server = _server,
-                Text = ircEventArgs.Data.Message,
-                TextArray = ircEventArgs.Data.MessageArray
+                Text = text,
+                TextArray = textArray
             };
 
             if (OnChannelMessage != null)
