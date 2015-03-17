@@ -20,6 +20,7 @@ namespace Plugin_Weather
         {
             _cache = new Dictionary<string, Coordinates>();
             _gcoder = new MapQuestGeocoder(mapQuestKey);
+            ((MapQuestGeocoder) _gcoder).UseOSM = true;
         }
 
         public Coordinates Lookup(string location)
