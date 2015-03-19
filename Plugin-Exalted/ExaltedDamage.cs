@@ -40,7 +40,7 @@ namespace Plugin_Exalted
                     }
                     else
                     {
-                        response.Add(string.Format("<{0}> {1}", m.Sender, RollPool(poolSize)));
+                        response.Add(string.Format("{0} -- {1}", m.Sender, RollPool(poolSize)));
                     }
                 }
             }
@@ -66,11 +66,11 @@ namespace Plugin_Exalted
 
             if (rolls.Length <= 50)
             {
-                response += String.Format("Rolls: {0}", string.Join(", ", rolls.ToList().OrderBy(r => r)));
+                response += String.Format("[{0}]", string.Join(", ", rolls.ToList().OrderBy(r => r)));
             }
             else
             {
-                response += "Rolls: Over 50 rolls, truncated to reduce spam";
+                response += "Over 50 rolls, truncated to reduce spam";
             }
             
             response += string.Format(" -- {0} success(es).",successes);
