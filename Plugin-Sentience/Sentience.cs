@@ -17,14 +17,24 @@ namespace Plugin_Sentience
 
         public List<string> Commands { get { return new List<string>(); } }
 
-        private Dictionary<string, Chain> _brains;
-        private const int Windowsize = 4;
+        private Dictionary<string, Chain> _brains;        
         private readonly object _writeLock = new object();
+        private Settings _settings;
 
         public static string BrainPath = "Plugins/Sentience/";
 
         public Sentience()
         {
+            if (File.Exists(Settings.FullPath))
+            {
+                _settings = Settings.Load();
+            }
+            else
+            {
+                _settings = new Settings();
+                _settings.Save();
+            }
+            
             _brains = new Dictionary<string, Chain>();
             if (!Directory.Exists(BrainPath))
             {
@@ -48,7 +58,7 @@ namespace Plugin_Sentience
 
             if (!_brains.ContainsKey(key))
             {
-                _brains.Add(key, new Chain(Windowsize));
+                _brains.Add(key, new Chain(_settings.WindowSize));
             }
             var brain = _brains[key];
 
@@ -69,7 +79,7 @@ namespace Plugin_Sentience
                 return new List<string> { response  };                                    
             }
             
-            if (message.Split(' ').Length > Windowsize)
+            if (message.Split(' ').Length > _settings.WindowSize)
             {
                 message = TextSanitizer.SanitizeInput(message);
                 brain.Learn(message);
@@ -97,7 +107,7 @@ namespace Plugin_Sentience
             foreach (var brainfile in brainFiles)
             {
                 var sr = new StreamReader(brainfile);
-                var brain = new Chain(Windowsize);
+                var brain = new Chain(_settings.WindowSize);
                 string line;
 
                 var key = brainfile.Replace(".brain", "");
@@ -120,7 +130,7 @@ namespace Plugin_Sentience
             foreach (var brainfile in brainFiles)
             {
                 var fileInfo = new FileInfo(brainfile);
-                if (fileInfo.Length > 3145728)
+                if (fileInfo.Length > _settings.LogSize)
                 {
                     File.Copy(brainfile,BrainPath+"pruning.brain");
                     File.Delete(brainfile);
