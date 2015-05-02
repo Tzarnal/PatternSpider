@@ -35,7 +35,7 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RelayChains">
-      <HintPath>..\..\RelayChains\RelayChains\bin\Release\RelayChains.dll</HintPath>
+      <HintPath>..\packages\relaychains.1.2.0\lib\net40\RelayChains.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
