@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Geocoding;
-using Geocoding.MapQuest;
+using Geocoding.Microsoft;
 
 namespace Plugin_Weather
 {
@@ -16,11 +16,11 @@ namespace Plugin_Weather
         private Dictionary<string, Coordinates> _cache;
         private IGeocoder _gcoder;
 
-        public GeoCodeLookup(string mapQuestKey)
+        public GeoCodeLookup(string Key)
         {
             _cache = new Dictionary<string, Coordinates>();
-            _gcoder = new MapQuestGeocoder(mapQuestKey);
-            ((MapQuestGeocoder) _gcoder).UseOSM = true;
+            _gcoder = new BingMapsGeocoder(Key);
+            //((MapQuestGeocoder) _gcoder).UseOSM = true;
         }
 
         public Coordinates Lookup(string location)

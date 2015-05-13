@@ -44,7 +44,7 @@ namespace Plugin_Weather
                 _apiKeys.Save();
             }
 
-            _lookup = new GeoCodeLookup(_apiKeys.MapQuestKey);
+            _lookup = new GeoCodeLookup(_apiKeys.BingKey);
         }
 
         public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
