@@ -35,7 +35,7 @@ type Mumble() =
         let names = match c.Users.Length with
                     | 0 -> String.Empty
                     | 1 -> c.Users.[0].Name
-                    | _ -> (c.Users |> Seq.fold (fun x y -> sprintf "%s, %s" x y.Name) "").TrimEnd(',')
+                    | _ -> String.Join(", ", c.Users)
         sprintf "%s - %s" c.Name names
 
     let formatOutput status =
