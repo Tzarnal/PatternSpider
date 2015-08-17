@@ -130,9 +130,13 @@ namespace Plugin_Weather
             {
                 coordinates = _lookup.Lookup(location);
             }
-            catch
-            {                
-               return new List<string> {"Could not find " + location };
+            catch(Exception e)
+            {
+                Console.WriteLine("Weather Lookup failure: " + e.Message);
+                if(!string.IsNullOrWhiteSpace(e.InnerException.Message))
+                    Console.WriteLine("--> " + e.InnerException.Message);
+
+                return new List<string> {"Could not find " + location };               
             }
 
             //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
