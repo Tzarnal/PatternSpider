@@ -133,7 +133,7 @@ namespace Plugin_Weather
             catch(Exception e)
             {
                 Console.WriteLine("Weather Lookup failure: " + e.Message);
-                if(!string.IsNullOrWhiteSpace(e.InnerException.Message))
+                if(e.InnerException!= null && !string.IsNullOrWhiteSpace(e.InnerException.Message))
                     Console.WriteLine("--> " + e.InnerException.Message);
 
                 return new List<string> {"Could not find " + location };               
