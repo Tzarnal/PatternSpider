@@ -85,7 +85,14 @@ namespace Plugin_Weather
                 }
                 else
                 {
-                    response = WeatherToday(command);
+                    if (_usersLocations.UserLocations.ContainsKey(command))
+                    {
+                        response = WeatherToday(_usersLocations.UserLocations[command]);
+                    }
+                    else
+                    {
+                        response = WeatherToday(command);
+                    }
                 }                
             }
             else
