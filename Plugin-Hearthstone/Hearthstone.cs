@@ -62,7 +62,7 @@ namespace Plugin_Hearthstone
             if (jsonString == null)
                 return "No Results found for: " + searchString;
 
-            var cards = PraseJson(jsonString);
+            var cards = ParseJson(jsonString);
 
             if (cards.Count == 1)
             {
@@ -74,7 +74,7 @@ namespace Plugin_Hearthstone
             return String.Format("[http://www.hearthhead.com/cards=?filter=na={1}] Found {0} cards.", cards.Count, searchString);
         }
 
-        private List<Card> PraseJson(string data)
+        private List<Card> ParseJson(string data)
         {
             return JsonConvert.DeserializeObject<List<Card>>(data);
         }
@@ -82,20 +82,34 @@ namespace Plugin_Hearthstone
         private string CardToString(Card card)
         {
             var cardText = "";
-            
+            var cardSet = "?";
+            var cardClass = "?";
+            var block = WildorStandard(card.set);
+
+            if (Tables.Sets.ContainsKey(card.set))
+            {
+                 cardSet = Tables.Sets[card.set];
+            }
+
+            if (Tables.Classes.ContainsKey(card.cardClass))
+            {
+                cardClass = Tables.Classes[card.cardClass];
+            }
+
+
             switch (card.type)
             {
                 case 4:
-                    cardText = String.Format("[http://www.hearthhead.com/card={5}] {6} Minion: {0} - {1}/{2} for {3} - {4}", 
-                                            card.name, card.attack, card.health, card.cost, card.description, card.id, Tables.Classes[card.cardClass]);
+                    cardText = String.Format("[http://www.hearthhead.com/card={5}] [{7}] [{8}] {6} Minion: {0} - {1}/{2} for {3} - {4}", 
+                                            card.name, card.attack, card.health, card.cost, card.description, card.id, cardClass, cardSet, block);
                     break;
                 case 5:
-                    cardText = String.Format("[http://www.hearthhead.com/card={3}] {4} Spell: {0} - {1} mana - {2}",
-                                            card.name, card.cost, card.description, card.id, Tables.Classes[card.cardClass]);
+                    cardText = String.Format("[http://www.hearthhead.com/card={3}] [{5}] [{6}] {4} Spell: {0} - {1} mana - {2}",
+                                            card.name, card.cost, card.description, card.id, cardClass, cardSet, block);
                     break;
                 case 7:
-                    cardText = string.Format("[http://www.hearthhead.com/card={4}] {5} Weapon: {0} - {1}/{2} for {3}",
-                                             card.name, card.attack, card.durability, card.cost, card.id, Tables.Classes[card.cardClass]);
+                    cardText = string.Format("[http://www.hearthhead.com/card={4}] [{6}] [{7}] {5} Weapon: {0} - {1}/{2} for {3}",
+                                             card.name, card.attack, card.durability, card.cost, card.id, cardClass, cardSet, block);
                     
                     if(!string.IsNullOrWhiteSpace(card.description))
                     {
@@ -103,12 +117,29 @@ namespace Plugin_Hearthstone
                     }
                     break;
                 default:
-                    cardText = String.Format("[http://www.hearthhead.com/card={3}] {0} - {1} mana - {2}",
-                                             card.name, card.cost, card.description, card.id);
+                    cardText = String.Format("[http://www.hearthhead.com/card={3}] [{4}] [{5}] {0} - {1} mana - {2}",
+                                             card.name, card.cost, card.description, card.id, cardSet, block);
                     break;
             }
 
             return cardText;
+        }
+
+        private string WildorStandard(int setId)
+        {
+            if (!Tables.Block.ContainsKey(setId))
+            {
+                return "-";
+            }
+
+            var cardBlock = Tables.Block[setId];
+
+            if (Tables.StandardLegal.Contains(cardBlock))
+            {
+                return "Standard";
+            }
+
+            return "Wild";
         }
 
         private string ExtractJsonStringFromPage(HtmlDocument document)
