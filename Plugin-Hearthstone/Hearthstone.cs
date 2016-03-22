@@ -47,6 +47,7 @@ namespace Plugin_Hearthstone
         private string SearchHearthHead(string searchString)
         {
             HtmlDocument document;
+            List<Card> cards;
             
             try
             {
@@ -62,7 +63,15 @@ namespace Plugin_Hearthstone
             if (jsonString == null)
                 return "No Results found for: " + searchString;
 
-            var cards = ParseJson(jsonString);
+
+            try
+            {
+                cards = ParseJson(jsonString);
+            }
+            catch
+            {
+                return string.Format("[http://www.hearthhead.com/cards=?filter=na={0}] Did not understand results.", searchString);
+            }
 
             if (cards.Count == 1)
             {
@@ -71,7 +80,7 @@ namespace Plugin_Hearthstone
             }
 
 
-            return String.Format("[http://www.hearthhead.com/cards=?filter=na={1}] Found {0} cards.", cards.Count, searchString);
+            return String.Format("[http://www.hearthhead.com/cards=?filter=na={1}] Found {0} results.", cards.Count, searchString);
         }
 
         private List<Card> ParseJson(string data)
@@ -84,16 +93,16 @@ namespace Plugin_Hearthstone
             var cardText = "";
             var cardSet = "?";
             var cardClass = "?";
-            var block = WildorStandard(card.set);
+            var block = WildorStandard(card.set ?? 1);
 
-            if (Tables.Sets.ContainsKey(card.set))
+            if (Tables.Sets.ContainsKey(card.set ?? 1))
             {
-                 cardSet = Tables.Sets[card.set];
+                 cardSet = Tables.Sets[card.set ?? 1];
             }
 
-            if (Tables.Classes.ContainsKey(card.cardClass))
+            if (Tables.Classes.ContainsKey(card.cardClass ?? 0))
             {
-                cardClass = Tables.Classes[card.cardClass];
+                cardClass = Tables.Classes[card.cardClass ?? 0];
             }
 
 

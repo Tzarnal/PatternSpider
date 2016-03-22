@@ -23,7 +23,8 @@ namespace Plugin_Hearthstone
         };
 
         public static Dictionary<int, string> Sets = new Dictionary<int, string>
-        {            
+        {
+            {1, "Unknown"},    
             {2, "Basic" },
             {3, "Classic" },
             {4, "Reward" },
@@ -36,7 +37,8 @@ namespace Plugin_Hearthstone
             {16, "Credits" },
             {17, "Alt Heroes" },
             {18, "Brawl" },
-            {20, "LoE" }            
+            {20, "LoE" },
+            {21, "WOG" }
         };
 
         public static Dictionary<int, string> Block = new Dictionary<int, string>
@@ -49,7 +51,8 @@ namespace Plugin_Hearthstone
             {13, "Year1"},
             {14, "Year2" },
             {15, "Year2" },
-            {20, "Year2" }
+            {20, "Year2" },
+            {21, "Kraken" }
         };
 
         public static List<string> StandardLegal = new List<string>
