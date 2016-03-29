@@ -247,7 +247,7 @@ namespace PatternSpider.Irc
                 TextArray = textArray
             };
 
-            if (OnChannelMessage != null)
+            if (OnUserMessage != null)
             {
                 ThreadStart threadStart = () => OnUserMessage(sender, this, m);
                 new Thread(threadStart).Start();
