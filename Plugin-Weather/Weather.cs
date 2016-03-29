@@ -185,7 +185,7 @@ namespace Plugin_Weather
 
             //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
 
-            var extendBlocks = new Extend[] 
+            var extendBlocks = new[] 
             {
                 Extend.hourly
             };
