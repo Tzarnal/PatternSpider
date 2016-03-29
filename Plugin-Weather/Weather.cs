@@ -51,7 +51,7 @@ namespace Plugin_Weather
         {
             var text = m.Text.Trim();
             var messageParts = text.Split(' ');
-            List<string> response;
+            List<string> response = new List<string>();
             var user = m.Sender;
 
             if (messageParts.Count() == 1)
@@ -62,7 +62,8 @@ namespace Plugin_Weather
                 }
                 else
                 {
-                    response = HelpText();
+                    GiveHelp(ircBot, m);
+
                 }
                 
             }
@@ -77,11 +78,11 @@ namespace Plugin_Weather
                     }
                     else
                     {
-                        response = HelpText();
+                        GiveHelp(ircBot, m);
                     }
                 }else if (command.ToLower() == "remember")
                 {
-                    response = HelpText();
+                    GiveHelp(ircBot, m);
                 }
                 else
                 {
@@ -251,6 +252,11 @@ namespace Plugin_Weather
             return new List<string> { "Remembering location for: " + user };
         }
 
+        private void GiveHelp(IrcBot ircBot, IrcMessage m)
+        {
+            var response = HelpText();
+            ircBot.SendQuery(m.Sender,response);
+        }
         
         private List<string> HelpText()
         {
