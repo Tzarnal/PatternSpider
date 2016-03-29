@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Data;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,15 +9,14 @@ using PatternSpider.Plugins;
 
 namespace Plugin_UrlTitle
 {
-    [Export(typeof(IPlugin))]
-    class UrlTitle : IPlugin
+    [Export(typeof (IPlugin))]
+    internal class UrlTitle : IPlugin
     {
-        public string Name { get { return "UrlTitle"; } }
-        public string Description { get { return "Shows the Title of the page associated with an url when an url is mentioned on irc"; } }
-       
-        public List<string> Commands {
-            get { return new List<string>(); }
-        }
+        public string Name => "UrlTitle";
+
+        public string Description => "Shows the Title of the page associated with an url when an url is mentioned on irc";
+
+        public List<string> Commands => new List<string>();
 
         public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
@@ -29,13 +25,14 @@ namespace Plugin_UrlTitle
 
         public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
-            var MatchUrlRegex = @"(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'"".,<>?«»“”‘’]))";
+            var MatchUrlRegex =
+                @"(?i)\b((?:[a-z][\w-]+:(?:/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'"".,<>?«»“”‘’]))";
             var results = Regex.Matches(m.Text, MatchUrlRegex);
 
             foreach (var result in results)
             {
                 var r = result;
-                OutputUrlTitle(r.ToString(), ircBot, channel);                
+                OutputUrlTitle(r.ToString(), ircBot, channel);
             }
 
             return null;
@@ -62,21 +59,23 @@ namespace Plugin_UrlTitle
                 else if (Regex.IsMatch(url, twitterStatusRegex))
                 {
                     message = GetTwitterMessage(url);
-                }else
+                }
+                else
                 {
                     message = GetWebPageTitle(url);
                 }
 
                 if (message != null)
                 {
-                    ircBot.SendMessage(channel, message);                    
+                    ircBot.SendMessage(channel, message);
                 }
 
-            }catch(Exception e)
+            }
+            catch 
             {
                 //Console.WriteLine(e.Message);
             }
-            
+
         }
 
         private string GetTwitterMessage(string url)
@@ -87,9 +86,9 @@ namespace Plugin_UrlTitle
                     "//p[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
 
             var namenode = document.DocumentNode.SelectSingleNode(
-                    "//strong[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
+                "//strong[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
 
-            return CleanString(string.Format("{0}: {1}",namenode.InnerText,statusnode.InnerText));
+            return CleanString(string.Format("{0}: {1}", namenode.InnerText, statusnode.InnerText));
         }
 
         private string GetTwitterMobileMessage(string url)
@@ -100,9 +99,9 @@ namespace Plugin_UrlTitle
                     "//div[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
 
             var namenode = document.DocumentNode.SelectSingleNode(
-                    "//div[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
+                "//div[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
 
-            return CleanString(string.Format("{0}: {1}", namenode.InnerText.Trim(), statusnode.InnerText.Trim()));            
+            return CleanString(string.Format("{0}: {1}", namenode.InnerText.Trim(), statusnode.InnerText.Trim()));
         }
 
         private string GetWebPageTitle(string url)
@@ -111,9 +110,8 @@ namespace Plugin_UrlTitle
             var titlenode = document.DocumentNode.SelectSingleNode("//head/title");
             if (titlenode == null)
                 return null;
-            
-            var title = Regex.Match(titlenode.InnerText, @"\S+.+").Value;
 
+            var title = Regex.Match(titlenode.InnerText, @"\S+.+").Value;
 
             return string.Format("[{0}]", CleanString(title));
         }
@@ -122,8 +120,8 @@ namespace Plugin_UrlTitle
         {
             input = WebUtility.HtmlDecode(input);
 
-            input = input.Replace("\n","");
-            input = input.Replace("\t","");
+            input = input.Replace("\n", "");
+            input = input.Replace("\t", "");
             input = input.Trim();
 
             return input;
@@ -131,34 +129,31 @@ namespace Plugin_UrlTitle
 
         private HtmlDocument UrlRequest(string url)
         {
-            var req = (HttpWebRequest)WebRequest.Create(url);
-            req.Method = "GET";
-            req.ContentType = "application/x-www-form-urlencoded";
-            req.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+            HtmlDocument document;
 
-            var responseStream = req.GetResponse().GetResponseStream();
-            var document = new HtmlDocument();
-
-            if (responseStream == null)
+            var web = new HtmlWeb();
+            web.OverrideEncoding = Encoding.UTF8;
+            web.PreRequest = delegate(HttpWebRequest webRequest)
             {
-                throw new NoNullAllowedException();
-            }
+                webRequest.Method = "GET";
+                webRequest.ContentType = "application/x-www-form-urlencoded";
+                webRequest.UserAgent =
+                    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2";
+                webRequest.Headers.Add("Accept-Language", "en-gb, en;q=0.8)");
+                return true;
+            };
 
-            using (var reader = new StreamReader(responseStream))
+            try
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    using (var writer = new StreamWriter(memoryStream))
-                    {
-                        writer.Write(reader.ReadToEnd());
-                        memoryStream.Position = 0;
-                        document.Load(memoryStream, new UTF8Encoding());
-                    }
-                }
+                document = web.Load(url);
             }
+            catch
+            {
+                return null;
+            }
+            
 
             return document;
         }
-       
     }
 }
