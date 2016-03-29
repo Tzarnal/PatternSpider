@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using Meebey.SmartIrc4net;
 
@@ -94,7 +95,7 @@ namespace PatternSpider.Irc
         public void Connect(string server)
         {
             // Create new IRC client and connect to given server.
-            var ircClient = new IrcClient {AutoReconnect = true, AutoNickHandling = true, AutoRelogin = true, AutoRetry = true};
+            var ircClient = new IrcClient {AutoReconnect = true, AutoNickHandling = true, AutoRelogin = true, AutoRetry = true, Encoding = Encoding.UTF8};
 
             ircClient.OnChannelMessage += IrcClientOnOnChannelMessage;
             ircClient.OnQueryMessage += IrcClientOnOnQueryMessage;
