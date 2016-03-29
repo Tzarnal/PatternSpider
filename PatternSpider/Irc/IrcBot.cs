@@ -171,6 +171,22 @@ namespace PatternSpider.Irc
             }
         }
 
+        public void SendQuery(string user, List<string> messages)
+        {
+            foreach (var message in messages)
+            {
+                SendQuery(user,message);
+            }
+        }
+
+        public void SendMessage(string target, List<string> messages) //Sends a message to either a channel or user 
+        {
+            foreach (var message in messages)
+            {
+                SendMessage(target, message);
+            }
+
+        }
 
         public void Join(string channel)
         {
