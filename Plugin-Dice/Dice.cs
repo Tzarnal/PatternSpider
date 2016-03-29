@@ -129,7 +129,7 @@ namespace Plugin_Dice
                         dieSize = int.Parse(numbers[1]);
                         amountThrown = int.Parse(numbers[0]);
                     }
-                    catch (OverflowException e)
+                    catch (OverflowException)
                     {
                         throw new ArgumentException("Die size or roll size exceeds " + Int32.MaxValue);
                     }
