@@ -95,7 +95,7 @@ namespace PatternSpider.Irc
         public void Connect(string server)
         {
             // Create new IRC client and connect to given server.
-            var ircClient = new IrcClient {AutoReconnect = true, AutoNickHandling = true, AutoRelogin = true, AutoRetry = true, Encoding = Encoding.UTF8};
+            var ircClient = new IrcClient {AutoReconnect = true, AutoNickHandling = true, AutoRelogin = true, AutoRetry = true, AutoRetryLimit = 0, Encoding = Encoding.UTF8};
 
             ircClient.OnChannelMessage += IrcClientOnOnChannelMessage;
             ircClient.OnQueryMessage += IrcClientOnOnQueryMessage;
