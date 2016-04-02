@@ -33,8 +33,13 @@
     <Reference Include="Forecast.io.45">
       <HintPath>..\packages\Forecast.io.1.0.8\lib\net45\Forecast.io.45.dll</HintPath>
     </Reference>
-    <Reference Include="Geocoding">
-      <HintPath>..\packages\Geocoding.net.3.2.1\lib\net40\Geocoding.dll</HintPath>
+    <Reference Include="Geocoding, Version=3.3.0.0, Culture=neutral, PublicKeyToken=7c714700b88674c7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Geocoding.net.3.3.0\lib\net40\Geocoding.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="IrcDotNet, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IrcDotNet.0.6.0\lib\net45\IrcDotNet.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
