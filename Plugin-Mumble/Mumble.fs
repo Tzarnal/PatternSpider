@@ -16,16 +16,28 @@ type Mumble() =
     
     let setup = 
         let path = Path.Combine("Plugins", "Mumble", "Servers.json")
-        if File.Exists path then
-            try
-                let createKey (s: ServerInfo) =
+        let createKey (s: ServerInfo) =
                     sprintf "%s::%s" (s.IrcServer.ToLowerInvariant()) (s.IrcChannel.ToLowerInvariant())
+        
+        if File.Exists path then
+            try                
                 let servers = JsonConvert.DeserializeObject<ServerInfo array>(File.ReadAllText(path))
                 servers |> Seq.iter (fun s -> urls.Add(createKey s, s.MumbleCVP))
             with 
             | :? System.Exception as e -> printfn "%A" e; ()
         else 
-            printfn "There is no config file '%s'" path
+            let servers = [
+                { IrcServer="irc.exampleserver.net"; IrcChannel="#examplechannel"; MumbleCVP="http://example.mumble.url/servers/1/cvp.json"}
+            ]
+
+            let json = JsonConvert.SerializeObject(servers)
+
+            try
+                File.WriteAllText(path,json)
+            with
+            | :? System.Exception as e -> printfn "%A" e; ()
+            
+            servers |> Seq.iter (fun s -> urls.Add(createKey s, s.MumbleCVP))
         ()
 
     do setup
