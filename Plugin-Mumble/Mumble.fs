@@ -16,10 +16,16 @@ type Mumble() =
     
     let setup = 
         let path = Path.Combine("Plugins", "Mumble", "Servers.json")
-        let createKey (s: ServerInfo) =
-            sprintf "%s::%s" (s.IrcServer.ToLowerInvariant()) (s.IrcChannel.ToLowerInvariant())
-        let servers = JsonConvert.DeserializeObject<ServerInfo array>(File.ReadAllText(path))
-        servers |> Seq.iter (fun s -> urls.Add(createKey s, s.MumbleCVP))
+        if File.Exists path then
+            try
+                let createKey (s: ServerInfo) =
+                    sprintf "%s::%s" (s.IrcServer.ToLowerInvariant()) (s.IrcChannel.ToLowerInvariant())
+                let servers = JsonConvert.DeserializeObject<ServerInfo array>(File.ReadAllText(path))
+                servers |> Seq.iter (fun s -> urls.Add(createKey s, s.MumbleCVP))
+            with 
+            | :? System.Exception as e -> printfn "%A" e; ()
+        else 
+            printfn "There is no config file '%s'" path
         ()
 
     do setup
