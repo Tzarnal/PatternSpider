@@ -39,6 +39,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Plugin-Mumble", "Plugin-Mum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Seen", "Plugin-Seen\Plugin-Seen.csproj", "{40BC99DC-2D70-467C-8F5E-5F1743F5C688}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Coin", "Plugin-Coin\Plugin-Coin.csproj", "{11023A8F-F563-47D4-915F-3D7DA93F9878}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{40BC99DC-2D70-467C-8F5E-5F1743F5C688}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40BC99DC-2D70-467C-8F5E-5F1743F5C688}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40BC99DC-2D70-467C-8F5E-5F1743F5C688}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11023A8F-F563-47D4-915F-3D7DA93F9878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11023A8F-F563-47D4-915F-3D7DA93F9878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11023A8F-F563-47D4-915F-3D7DA93F9878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11023A8F-F563-47D4-915F-3D7DA93F9878}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
