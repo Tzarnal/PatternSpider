@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -31,7 +32,15 @@ namespace Plugin_Note
                 Directory.CreateDirectory(DataPath);
             }
 
-            File.WriteAllText(FullPath, data);
+            try
+            {
+                File.WriteAllText(FullPath, data);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Failed to save Notes: " + e.Message);
+            }
+            
         }
 
         public static Notes Load()
