@@ -38,7 +38,8 @@ namespace Plugin_Hearthstone
             {17, "Alt Heroes" },
             {18, "Brawl" },
             {20, "LoE" },
-            {21, "OG" }
+            {21, "OG" },
+            {22, "OG" },
         };
 
         public static Dictionary<int, string> Block = new Dictionary<int, string>
@@ -52,7 +53,8 @@ namespace Plugin_Hearthstone
             {14, "Year2" },
             {15, "Year2" },
             {20, "Year2" },
-            {21, "Kraken" }
+            {21, "Kraken" },
+            {22, "Kraken" }
         };
 
         public static List<string> StandardLegal = new List<string>
