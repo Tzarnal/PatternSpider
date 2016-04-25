@@ -38,7 +38,7 @@ namespace Plugin_Hearthstone
             {17, "Alt Heroes" },
             {18, "Brawl" },
             {20, "LoE" },
-            {21, "WOG" }
+            {21, "OG" }
         };
 
         public static Dictionary<int, string> Block = new Dictionary<int, string>
