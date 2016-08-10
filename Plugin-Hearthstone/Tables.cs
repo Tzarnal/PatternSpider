@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Plugin_Hearthstone
 {
@@ -40,6 +36,7 @@ namespace Plugin_Hearthstone
             {20, "LoE" },
             {21, "OG" },
             {22, "OG" },
+            {23, "KARA" },
         };
 
         public static Dictionary<int, string> Block = new Dictionary<int, string>
@@ -54,7 +51,8 @@ namespace Plugin_Hearthstone
             {15, "Year2" },
             {20, "Year2" },
             {21, "Kraken" },
-            {22, "Kraken" }
+            {22, "Kraken" },
+            {23, "Kraken" },
         };
 
         public static List<string> StandardLegal = new List<string>
