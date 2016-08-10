@@ -120,9 +120,12 @@ namespace Plugin_UrlTitle
         {
             input = WebUtility.HtmlDecode(input);
 
-            input = input.Replace("\n", "");
-            input = input.Replace("\t", "");
+            input = input.Replace("\n", " ");
+            input = input.Replace("\t", " ");
+            input = input.Replace("pic.twitter", " pic.twitter");
+
             input = input.Trim();
+            input = Regex.Replace(input, @"\s+", " ");
 
             return input;
         }
