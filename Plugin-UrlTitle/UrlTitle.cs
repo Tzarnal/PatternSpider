@@ -122,7 +122,7 @@ namespace Plugin_UrlTitle
 
             input = input.Replace("\n", " ");
             input = input.Replace("\t", " ");
-            input = input.Replace("pic.twitter", " pic.twitter");
+            input = input.Replace("pic.twitter", " https://pic.twitter");
 
             input = input.Trim();
             input = Regex.Replace(input, @"\s+", " ");
