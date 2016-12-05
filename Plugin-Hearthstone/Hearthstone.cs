@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -86,14 +87,19 @@ namespace Plugin_Hearthstone
         private string CardToString(Card card)
         {
             string cardText;
-            var zamName = card.name.ToLower().Replace(" ", "-");
-            string cardSet = card.set;
-            string cardClass = ReCapitilize(card.card_class);
+            var zamName = card.name.ToLower().Replace(" ", "-");            
+            var cardClass = ReCapitilize(card.card_class);
+
+            var cardSet = card.set;
+            if (Tables.BlockNameCorrection.ContainsKey(cardSet))
+            {
+                cardSet = Tables.BlockNameCorrection[cardSet];
+            }
 
             var block = "Unknown";
-            if (Tables.Block.ContainsKey(card.set))
+            if (Tables.Block.ContainsKey(cardSet))
             {
-                block = Tables.Block[card.set];
+                block = Tables.Block[cardSet];
             }
 
             var format = "Wild";

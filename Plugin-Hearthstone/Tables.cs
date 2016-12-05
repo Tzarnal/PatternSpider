@@ -17,8 +17,14 @@ namespace Plugin_Hearthstone
             {"TGT", "Year2" },
             {"LOE", "Year2" },
             {"OG", "Kraken" },
-            {"KARA", "Kraken" },
-            {"GADGET", "Kraken" },
+            {"MSG", "Kraken" },
+        };
+
+
+        public static Dictionary<string, string> BlockNameCorrection = new Dictionary<string, string>()
+        {
+            {"GANGS", "MSG"},
+            {"GADGET", "MSG"}
         };
 
         public static List<string> StandardLegal = new List<string>
