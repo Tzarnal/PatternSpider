@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
+using System.Text.RegularExpressions;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using Newtonsoft.Json;
@@ -89,6 +91,7 @@ namespace Plugin_Hearthstone
             string cardText;
             var zamName = card.name.ToLower().Replace(" ", "-");            
             var cardClass = ReCapitilize(card.card_class);
+            card.text = CorrectCardText(card.text);
 
             var cardSet = card.set;
             if (Tables.BlockNameCorrection.ContainsKey(cardSet))
@@ -142,6 +145,21 @@ namespace Plugin_Hearthstone
                 return text;
             
             return text[0].ToString().ToUpper() + text.Substring(1).ToLower();
-        }      
+        }
+
+        private string CorrectCardText(string text)
+        {
+            //Insert points for details
+            var newText = Regex.Replace(text, "{.}", string.Empty);
+
+            //Markup
+            newText = Regex.Replace(newText, "<.>", string.Empty);
+            newText = Regex.Replace(newText, "</.>", string.Empty);
+
+            //@ Symbols
+            newText = newText.Replace("@", " ");
+
+            return newText;
+        }
     }
 }
