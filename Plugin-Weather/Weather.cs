@@ -190,7 +190,7 @@ namespace Plugin_Weather
                 Extend.hourly
             };
 
-            var weatherRequest = new ForecastIORequest(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude, Unit.si, extendBlocks);
+            var weatherRequest = new ForecastIORequest(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude, Unit.si);
             
             ForecastIOResponse weather;
 
