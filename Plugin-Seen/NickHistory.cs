@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -32,7 +33,14 @@ namespace Plugin_Seen
                 Directory.CreateDirectory(DataPath);
             }
 
-            File.WriteAllText(FullPath, data);
+            try
+            {
+                File.WriteAllText(FullPath, data);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to save Nick History: " + e.Message);
+            }            
         }
 
         public void SaveHeartbeat()

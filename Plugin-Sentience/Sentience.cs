@@ -96,7 +96,16 @@ namespace Plugin_Sentience
             lock (_writeLock)
             {
                 var fs = File.AppendText(BrainPath + key + ".brain");
-                fs.WriteLine(message);
+
+                try
+                {
+                    fs.WriteLine(message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to save Sentience Memory: " + e.Message);
+                }
+                
                 fs.Close();
             }
         }
