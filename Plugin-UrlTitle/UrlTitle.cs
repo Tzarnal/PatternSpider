@@ -12,11 +12,18 @@ namespace Plugin_UrlTitle
     [Export(typeof (IPlugin))]
     internal class UrlTitle : IPlugin
     {
+        private TwitterHandler _twitter;
+
         public string Name => "UrlTitle";
 
         public string Description => "Shows the Title of the page associated with an url when an url is mentioned on irc";
 
         public List<string> Commands => new List<string>();
+
+        public UrlTitle()
+        {
+            _twitter = new TwitterHandler();
+        }
 
         public List<string> OnUserMessage(IrcBot ircBot, string server, IrcMessage m)
         {
@@ -47,16 +54,10 @@ namespace Plugin_UrlTitle
         {
             try
             {
-                const string twitterStatusRegex = @"twitter.com/\w+/status/\d+";
-                const string twitterMobileStatusRegex = @"mobile.twitter.com/\w+/status/\d+";
+                const string twitterStatusRegex = @"twitter.com/\w+/status/\d+";                
                 string message;
 
-
-                if (Regex.IsMatch(url, twitterMobileStatusRegex))
-                {
-                    message = GetTwitterMobileMessage(url);
-                }
-                else if (Regex.IsMatch(url, twitterStatusRegex))
+                if (Regex.IsMatch(url, twitterStatusRegex))
                 {
                     message = GetTwitterMessage(url);
                 }
@@ -80,28 +81,11 @@ namespace Plugin_UrlTitle
 
         private string GetTwitterMessage(string url)
         {
-            var document = UrlRequest(url);
-            var statusnode =
-                document.DocumentNode.SelectSingleNode(
-                    "//p[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
+            const string twitterStatusRegex = @"twitter.com/\w+/status/(\d+)";
+            var result = Regex.Match(url, twitterStatusRegex);
 
-            var namenode = document.DocumentNode.SelectSingleNode(
-                "//strong[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
-
-            return CleanString(string.Format("{0}: {1}", namenode.InnerText, statusnode.InnerText));
-        }
-
-        private string GetTwitterMobileMessage(string url)
-        {
-            var document = UrlRequest(url);
-            var statusnode =
-                document.DocumentNode.SelectSingleNode(
-                    "//div[contains(concat(' ', normalize-space(@class), ' '), 'tweet-text')]");
-
-            var namenode = document.DocumentNode.SelectSingleNode(
-                "//div[contains(concat(' ', normalize-space(@class), ' '), 'fullname')]");
-
-            return CleanString(string.Format("{0}: {1}", namenode.InnerText.Trim(), statusnode.InnerText.Trim()));
+            return _twitter.GetTweet(result.Groups[1].Value); 
+                        
         }
 
         private string GetWebPageTitle(string url)
