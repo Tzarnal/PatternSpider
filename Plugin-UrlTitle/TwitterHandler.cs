@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using LinqToTwitter;
+using System.Web;
 
 namespace Plugin_UrlTitle
 {    
@@ -58,7 +59,9 @@ namespace Plugin_UrlTitle
                     checkmark = "✔️";
                 }
 
-                return $"@{status.User.ScreenNameResponse}{checkmark}: {status.Text}";
+                var text = HttpUtility.HtmlDecode(status.Text);
+
+                return $"@{status.User.ScreenNameResponse}{checkmark}: {text}";
             }
             catch (Exception e)
             {
