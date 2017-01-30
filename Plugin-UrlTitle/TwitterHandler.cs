@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using LinqToTwitter;
 using System.Web;
 
@@ -60,6 +61,8 @@ namespace Plugin_UrlTitle
                 }
 
                 var text = HttpUtility.HtmlDecode(status.Text);
+                text = Regex.Replace(text, "\n", ",");
+
 
                 return $"@{status.User.ScreenNameResponse}{checkmark}: {text}";
             }
