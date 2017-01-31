@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternSpider", "PatternSpider\PatternSpider.csproj", "{3B239429-F0A0-4D78-B122-6BB9F39CA7D9}"
 EndProject
@@ -34,8 +34,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-MTG", "Plugin-MTG\Plugin-MTG.csproj", "{47FE0B2F-9526-43AB-AA32-0B36D48314D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{595C4499-D84A-45B6-97DE-DFC602D097EF}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Plugin-Mumble", "Plugin-Mumble\Plugin-Mumble.fsproj", "{0C09F71F-A807-44B8-9F81-B5C19267DB16}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin-Seen", "Plugin-Seen\Plugin-Seen.csproj", "{40BC99DC-2D70-467C-8F5E-5F1743F5C688}"
 EndProject
@@ -109,10 +107,6 @@ Global
 		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47FE0B2F-9526-43AB-AA32-0B36D48314D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C09F71F-A807-44B8-9F81-B5C19267DB16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C09F71F-A807-44B8-9F81-B5C19267DB16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C09F71F-A807-44B8-9F81-B5C19267DB16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C09F71F-A807-44B8-9F81-B5C19267DB16}.Release|Any CPU.Build.0 = Release|Any CPU
 		{40BC99DC-2D70-467C-8F5E-5F1743F5C688}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{40BC99DC-2D70-467C-8F5E-5F1743F5C688}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40BC99DC-2D70-467C-8F5E-5F1743F5C688}.Release|Any CPU.ActiveCfg = Release|Any CPU
