@@ -84,7 +84,7 @@ namespace Plugin_UrlTitle
             const string twitterStatusRegex = @"twitter.com/\w+/status/(\d+)";
             var result = Regex.Match(url, twitterStatusRegex);
 
-            return _twitter.GetTweet(result.Groups[1].Value); 
+            return CleanString(_twitter.GetTweet(result.Groups[1].Value)); 
                         
         }
 
