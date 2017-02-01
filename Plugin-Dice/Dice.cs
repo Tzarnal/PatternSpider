@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -78,7 +78,18 @@ namespace Plugin_Dice
             } while (!string.IsNullOrWhiteSpace(_diceResults));
 
 
-            var total = CalculateString(processedMessage);
+            double total;
+            
+            try
+            {
+                total = CalculateString(processedMessage);
+            }
+            catch (InvalidExpressionException e)
+            {
+                return new List<string> { e.Message };
+            }
+            
+
             if (total != 0 && total.ToString(CultureInfo.InvariantCulture) != processedMessage.Trim())
             {
                 response.Add(string.Format("{0} -- Result: {1}", name, total));
@@ -161,19 +172,21 @@ namespace Plugin_Dice
 
         private double CalculateString(string input)
         {
-            var sc = new MSScriptControl.ScriptControl {Language = "VBScript"};
+            if (Regex.Match(input, @"[A-z]").Success)
+                throw new InvalidExpressionException("Unsupported symbols or characters in expression.");
 
-            if (Regex.Match(input, @"[abcdefghijklmnopqrstuvwxyz]").Success)
-                return 0;
+            double result;
 
             try
             {
-                return sc.Eval(input);
+                result = Convert.ToDouble(new DataTable().Compute(input, null));
             }
-            catch (COMException)
+            catch (Exception e)
             {
-                return 0;
-            }            
+                throw new InvalidExpressionException("Error occured while trying to calculate: " + e.Message);
+            }
+
+            return result;
         }
     }
 }

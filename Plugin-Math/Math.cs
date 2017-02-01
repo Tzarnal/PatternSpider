@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
@@ -28,9 +28,9 @@ namespace Plugin_Math
             {
                 return new List<string> {CalculateString(message).ToString(CultureInfo.InvariantCulture)};
             }
-            catch (InvalidExpressionException)
+            catch (InvalidExpressionException e)
             {
-                return new List<string> {"Not a valid mathematical Expression."};
+                return new List<string> {e.Message};
             }
             
         }
@@ -47,20 +47,21 @@ namespace Plugin_Math
 
         private double CalculateString(string input)
         {
-            if (Regex.Match(input, @"[abcdefghijklmnopqrstuvwxyz]").Success)
-                throw new InvalidExpressionException();
+            if (Regex.Match(input, @"[A-z]").Success)
+                throw new InvalidExpressionException("Unsupported symbols or characters in expression.");
 
-            var sc = new MSScriptControl.ScriptControl {Language = "VBScript"};
-
+            double result;
 
             try
             {
-                return sc.Eval(input);
+                result = Convert.ToDouble(new DataTable().Compute(input, null));
             }
-            catch (COMException)
+            catch (Exception e)
             {
-                throw new InvalidExpressionException();
-            }      
+                throw new InvalidExpressionException("Error occured while trying to calculate: " + e.Message);
+            }
+            
+            return result;
         }
     }
 }
