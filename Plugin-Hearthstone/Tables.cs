@@ -11,6 +11,7 @@ namespace Plugin_Hearthstone
             {"CLASSIC", "Classic" },
             {"REWARD", "Wild" },            
             {"PROMO", "Wild" },
+            {"HOF","Wild" },
             {"NAXX", "Year1" },
             {"GVG", "Year1"},
             {"BRM", "Year2" },
@@ -18,6 +19,7 @@ namespace Plugin_Hearthstone
             {"LOE", "Year2" },
             {"OG", "Kraken" },
             {"MSG", "Kraken" },
+            {"UNGORO","Mammoth" }
         };
 
 
@@ -31,8 +33,8 @@ namespace Plugin_Hearthstone
         {
             "Basic",
             "Classic",            
-            "Year2",
-            "Kraken"
+            "Kraken",
+            "Mammoth"
         };
     }
 }

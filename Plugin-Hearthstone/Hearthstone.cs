@@ -111,6 +111,8 @@ namespace Plugin_Hearthstone
                 format = "Standard";
             }
 
+            card.text = card.text.Replace("\n", " ");
+
             switch (card.type)
             {
                 case "MINION":
