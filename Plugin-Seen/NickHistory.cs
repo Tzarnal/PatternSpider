@@ -7,8 +7,8 @@ namespace Plugin_Seen
 {
     class NickHistory
     {
-        public static string DataPath = "Plugins/Note/";
-        public static string DataFileName = "Notes.json";
+        public static string DataPath = "Plugins/Seen/";
+        public static string DataFileName = "Seen.json";
         private int _saveHeartbeat;
 
         public static string FullPath

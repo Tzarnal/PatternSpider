@@ -45,10 +45,10 @@ namespace Plugin_Seen
 
             foreach (var target in targets)
             {
-                if (history.ContainsKey(target))
+                if (history.ContainsKey(target.ToLower()))
                 {
-                    var entry = history[target];
-                    message.Add(string.Format("{0} was last seen {1} in {2} saying: {3}", target, entry.Time.TimeSince(),
+                    var entry = history[target.ToLower()];
+                    message.Add(string.Format("{0} was last seen {1} in {2} saying: {3}", target.ToLower(), entry.Time.TimeSince(),
                         entry.Channel, entry.Message));
                 }
                 else
@@ -62,14 +62,16 @@ namespace Plugin_Seen
 
         public List<string> OnChannelMessage(IrcBot ircBot, string server, string channel, IrcMessage m)
         {
+            var sender = m.Sender.ToLower();
+
             if (!_history.HistoryByServer.ContainsKey(m.Server))
             {
                 _history.HistoryByServer.Add(m.Server,new Dictionary<string, HistoryEntry>());    
             }
 
-            if (_history.HistoryByServer[m.Server].ContainsKey(m.Sender))
+            if (_history.HistoryByServer[m.Server].ContainsKey(sender))
             {
-                _history.HistoryByServer[m.Server][m.Sender] = new HistoryEntry
+                _history.HistoryByServer[m.Server][sender] = new HistoryEntry
                 {
                     Channel = m.Channel,
                     Time = DateTime.Now,
@@ -78,7 +80,7 @@ namespace Plugin_Seen
             }
             else
             {
-                _history.HistoryByServer[m.Server].Add(m.Sender, new HistoryEntry
+                _history.HistoryByServer[m.Server].Add(sender, new HistoryEntry
                 {
                     Channel = m.Channel,
                     Time = DateTime.Now,
