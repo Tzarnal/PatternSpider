@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using ForecastIO;
-using ForecastIO.Extensions;
+
 using PatternSpider.Irc;
 using PatternSpider.Plugins;
 using System.Collections.Generic;
@@ -44,7 +43,7 @@ namespace Plugin_Weather
                 _apiKeys.Save();
             }
 
-            _lookup = new GeoCodeLookup(_apiKeys.BingKey);
+            _lookup = new GeoCodeLookup(_apiKeys.MapQuestKey);
         }
 
         public List<string> IrcCommand(IrcBot ircBot, string server, IrcMessage m)
@@ -127,7 +126,6 @@ namespace Plugin_Weather
             return null;
         }
 
-
         private List<string> WeatherToday(string location)
         {
 
@@ -147,24 +145,22 @@ namespace Plugin_Weather
                 return new List<string> {"Could not find " + location };               
             }
 
-            //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
-
-            var weatherRequest = new ForecastIORequest(_apiKeys.ForecastIoKey,coordinates.Latitude, coordinates.Longitude, DateTime.Now, Unit.si);
-            ForecastIOResponse weather;
-
+            var weatherRequest = new WeatherLookup(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude);
+            WeatherData weather;
+            
             try
             {
                 weather = weatherRequest.Get();
             }
             catch
             {
-                return new List<string> { "Found " + location + " but could not find any weather there."};
+                return new List<string> { "Found " + coordinates.Name + " but could not find any weather there."};
             }
-               
+            
             var wToday = weather.currently;
 
             output = new List<string> { string.Format("Weather for {0}: {1} and {2}, {3}% Humidity and {4} Winds.", 
-                location, Temp(wToday.temperature), wToday.summary, wToday.humidity  * 100,  Windspeed(wToday.windSpeed) )};
+                coordinates.Name, Temp(wToday.temperature), wToday.summary, wToday.humidity  * 100,  Windspeed(wToday.windSpeed) )};
 
             return output;
         }
@@ -182,36 +178,28 @@ namespace Plugin_Weather
             {
                 return new List<string> { "Could not find " + location };
             }
-
-            //output = new List<string>{string.Format("{0} by {1}", coordinates.Latitude,coordinates.Longitude)};
-
-            var extendBlocks = new[] 
-            {
-                Extend.hourly
-            };
-
-            var weatherRequest = new ForecastIORequest(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude, Unit.si);
             
-            ForecastIOResponse weather;
-
+            var weatherRequest = new WeatherLookup(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude);
+            WeatherData weather;
+                        
             try
             {
                 weather = weatherRequest.Get();
             }
             catch
             {
-                return new List<string> { "Found " + location + " but could not find any weather there." };
+                return new List<string> { "Found " + coordinates.Name + " but could not find any weather there." };
             }
 
-            output.Add("3 day forecast for: " + location);
 
+            output.Add("3 day forecast for: " + coordinates.Name);
 
             var dailyWeather = weather.daily.data.Skip(2).Take(3);
 
             foreach (var dayWeather in dailyWeather)
-            {
+            {                
                 output.Add(string.Format("{0}: {1} {2} to {3}",
-                                         dayWeather.time.ToDateTime().DayOfWeek,
+                                         TimeFromEpoch(dayWeather.time).DayOfWeek,
                                          dayWeather.summary,
                                          Temp(dayWeather.temperatureMin),
                                          Temp(dayWeather.temperatureMax) ));
@@ -220,7 +208,13 @@ namespace Plugin_Weather
             return output;
         }
 
-        private string Windspeed(float windSpeedKm)
+        private DateTime TimeFromEpoch(int time)
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return epoch.AddSeconds(time);
+        }
+
+        private string Windspeed(double windSpeedKm)
         {
             var windSpeedM = windSpeedKm * 0.62137;
 
@@ -229,7 +223,7 @@ namespace Plugin_Weather
                 Math.Round(windSpeedM,MidpointRounding.AwayFromZero) );
         }
 
-        private string Temp(float temperatureC)
+        private string Temp(double temperatureC)
         {
             var temperatureF = temperatureC * 9/5 + 32;
 

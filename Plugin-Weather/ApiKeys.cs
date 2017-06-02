@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 
 namespace Plugin_Weather
@@ -15,13 +14,13 @@ namespace Plugin_Weather
         }
 
         public string ForecastIoKey;
-        //public string MapQuestKey;
+        public string MapQuestKey;
         public string BingKey;
 
         public ApiKeys ()
         {
             ForecastIoKey = "Dummy-Key-0123456";
-            //MapQuestKey = "Dummy-Key-0123456";
+            MapQuestKey = "Dummy-Key-0123456";
             BingKey = "Dummy-Key-0123456";
         }
 

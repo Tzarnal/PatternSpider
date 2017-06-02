@@ -1,26 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Geocoding;
-using Geocoding.Microsoft;
+using System.Net;
+using Newtonsoft.Json;
+
 
 namespace Plugin_Weather
 {
     struct Coordinates
     {
         public float Latitude;
-        public float Longitude;       
+        public float Longitude;
+        public string Name;
     }
-    
+   
     class GeoCodeLookup
     {
-        private Dictionary<string, Coordinates> _cache;
-        private IGeocoder _gcoder;
+        private string _key;
 
-        public GeoCodeLookup(string Key)
+        private Dictionary<string, Coordinates> _cache;        
+
+        public GeoCodeLookup(string key)
         {
             _cache = new Dictionary<string, Coordinates>();
-            _gcoder = new BingMapsGeocoder(Key);
-            //((MapQuestGeocoder) _gcoder).UseOSM = true;
+            _key = key;
         }
 
         public Coordinates Lookup(string location)
@@ -32,16 +34,20 @@ namespace Plugin_Weather
             
             var coordinates = new Coordinates();
 
-            var qLocation = _gcoder.Geocode(location);
-            var qCoordinates = qLocation.First().Coordinates;
+            var requestString = $"http://www.mapquestapi.com/geocoding/v1/address?key={_key}&location={location}";
 
-
-            coordinates.Latitude = (float) qCoordinates.Latitude;
-            coordinates.Longitude = (float) qCoordinates.Longitude;
+            var json = new WebClient().DownloadString(requestString);
+            var locationData = JsonConvert.DeserializeObject<GeoLocationData>(json);
+            
+            var locationResult = locationData.results.First().locations.First();
+            
+            coordinates.Latitude = (float) locationResult.latLng.lat;
+            coordinates.Longitude = (float) locationResult.latLng.lng;
+            coordinates.Name = locationResult.ToString();
 
             _cache.Add(location,coordinates);
 
             return coordinates;
-        }
+        }        
     }
 }
