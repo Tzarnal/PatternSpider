@@ -107,7 +107,7 @@ namespace Plugin_Weather
                 locationElements.Add(street);
             }
 
-            return string.Join(",",locationElements);
+            return string.Join(", ",locationElements);
         }
     }
 
