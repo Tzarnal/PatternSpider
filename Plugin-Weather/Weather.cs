@@ -138,7 +138,7 @@ namespace Plugin_Weather
             }
             catch(Exception e)
             {
-                Console.WriteLine("Weather Lookup failure: " + e.Message);
+                Console.WriteLine("Location Lookup failure: " + e.Message);
                 if(e.InnerException!= null && !string.IsNullOrWhiteSpace(e.InnerException.Message))
                     Console.WriteLine("--> " + e.InnerException.Message);
 
@@ -147,14 +147,20 @@ namespace Plugin_Weather
 
             var weatherRequest = new WeatherLookup(_apiKeys.ForecastIoKey, coordinates.Latitude, coordinates.Longitude);
             WeatherData weather;
-            
+
+            weather = weatherRequest.Get();
+
             try
             {
-                weather = weatherRequest.Get();
+                
             }
-            catch
+            catch(Exception e)
             {
-                return new List<string> { "Found " + coordinates.Name + " but could not find any weather there."};
+                Console.WriteLine("Weather Lookup failure: " + e.Message);
+                if (e.InnerException != null && !string.IsNullOrWhiteSpace(e.InnerException.Message))
+                    Console.WriteLine("--> " + e.InnerException.Message);
+
+                return new List<string> { "Found " + coordinates.Name + " but could not find any weather there." };
             }
             
             var wToday = weather.currently;
