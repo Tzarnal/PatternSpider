@@ -57,7 +57,7 @@ namespace Plugin_UrlTitle
                 var checkmark = "";
                 if (status.User.Verified)
                 {
-                    checkmark = "✔️";
+                    checkmark = "✓";
                 }
 
                 return $"@{status.User.ScreenNameResponse}{checkmark}: {status.Text}";
